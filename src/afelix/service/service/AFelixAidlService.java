@@ -13,6 +13,7 @@
 package afelix.service.service;
 
 import org.apache.felix.framework.Felix;
+import org.osgi.framework.BundleException;
 
 import afelix.service.felixcontrol.FelixControler;
 import afelix.service.felixcontrol.LaunchFelix;
@@ -22,9 +23,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 public class AFelixAidlService extends Service{
 
+	final private static String TAG = "FelixAidlService";
+	
 	private Felix main_felix_framework = null;
 	private LaunchFelix launchFelix = null;
 	private FelixControler fc = null;
@@ -63,23 +67,33 @@ public class AFelixAidlService extends Service{
 		@Override
 		public void installBundle(String bundle) throws RemoteException {
 			// TODO Auto-generated method stub
-			fc.installBundle(bundle, AFelixAidlService.this);
+			fc.install(AFelixAidlService.this, bundle,  2);
 		}
 		
 		@Override
 		public void installBundleByLocation(String bundle, String location)
 				throws RemoteException {
 			// TODO Auto-generated method stub
-			fc.installBundle(bundle, location);
+			fc.install(bundle, location, 2);
 		}
 		
 		@Override
 		public void startFelix() throws RemoteException {
 			// TODO Auto-generated method stub
-			
+			try {
+				main_felix_framework.start();
+			} catch (BundleException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, "Can't start felix for:"+e.toString(), e);
+			}
 		}
 		
-		
+
+		@Override
+		public void startBundle(String bundle) throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
 		
 		@Override
 		public void stopBundle(String bundle) throws RemoteException {
@@ -87,12 +101,6 @@ public class AFelixAidlService extends Service{
 			
 		}
 		
-		
-		@Override
-		public void startBundle(String bundle) throws RemoteException {
-			// TODO Auto-generated method stub
-			
-		}
 		
 		@Override
 		public void uninstallBundle(String bundle_id) throws RemoteException {
