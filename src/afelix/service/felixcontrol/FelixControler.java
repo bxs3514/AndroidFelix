@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleException;
@@ -14,7 +15,7 @@ import android.util.Log;
 public class FelixControler {
 	final private static String TAG = "FelixControler";
 	
-	Felix felixFramework = null;
+	private Felix felixFramework = null;
 	
 	public FelixControler(Felix f){
 		this.felixFramework = f;
@@ -108,4 +109,24 @@ public class FelixControler {
 		return "Success";
 	}
 	
+	public ArrayList<String> BundleInfo(Felix f, int command){
+		ArrayList<String> as = new ArrayList<String>();
+		
+		for(org.osgi.framework.Bundle b : f.getBundleContext().getBundles()) {
+			switch(command){
+			case 1:
+				as.add(Long.toString(b.getBundleId()));
+				break;
+			case 2:
+				as.add(b.getSymbolicName());
+				break;
+			case 4:
+				as.add(b.getBundleId()+" Bundle: \t" + b.getState() + "\t name: "+b.getSymbolicName());
+				break;
+			default:
+				Log.e(TAG, "Invalid command.");
+			}
+		}
+		return as;
+	}
 }

@@ -96,6 +96,13 @@ this.stopBundle(_arg0);
 reply.writeNoException();
 return true;
 }
+case TRANSACTION_getAll:
+{
+data.enforceInterface(DESCRIPTOR);
+this.getAll();
+reply.writeNoException();
+return true;
+}
 case TRANSACTION_getBundleId:
 {
 data.enforceInterface(DESCRIPTOR);
@@ -240,6 +247,20 @@ _reply.recycle();
 _data.recycle();
 }
 }
+@Override public void getAll() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_getAll, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
 @Override public int getBundleId(java.lang.String bundle) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
@@ -306,9 +327,10 @@ static final int TRANSACTION_installBundleByLocation = (android.os.IBinder.FIRST
 static final int TRANSACTION_uninstallBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 3);
 static final int TRANSACTION_startBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 4);
 static final int TRANSACTION_stopBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
-static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
-static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
-static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
+static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
+static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
+static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
+static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
 }
 public void startFelix() throws android.os.RemoteException;
 public void installBundle(java.lang.String bundle) throws android.os.RemoteException;
@@ -316,6 +338,7 @@ public void installBundleByLocation(java.lang.String bundle, java.lang.String lo
 public void uninstallBundle(java.lang.String bundle_id) throws android.os.RemoteException;
 public void startBundle(java.lang.String bundle) throws android.os.RemoteException;
 public void stopBundle(java.lang.String bundle) throws android.os.RemoteException;
+public void getAll() throws android.os.RemoteException;
 public int getBundleId(java.lang.String bundle) throws android.os.RemoteException;
 public afelix.service.interfaces.BundlePresent getBundlesContainer(java.lang.String bundle) throws android.os.RemoteException;
 public java.lang.String dependency(java.lang.String bundle) throws android.os.RemoteException;

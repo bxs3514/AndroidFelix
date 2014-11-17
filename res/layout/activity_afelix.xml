@@ -8,4 +8,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="afelix.mornitor.activity.AFelixActivity" >
 
+    <TextView
+        android:id="@+id/BundleInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="38dp"
+         />
+
 </RelativeLayout>

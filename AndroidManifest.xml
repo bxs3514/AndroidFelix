@@ -26,6 +26,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <service android:name="afelix.service.service.AFelixAidlService"></service>
     </application>
 
 </manifest>

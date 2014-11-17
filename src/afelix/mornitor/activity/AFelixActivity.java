@@ -1,17 +1,36 @@
 package afelix.mornitor.activity;
 
 import afelix.afelixservice.androidfelix.R;
+import afelix.service.interfaces.IAFelixService;
 import android.support.v7.app.ActionBarActivity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class AFelixActivity extends ActionBarActivity {
 
+	private ServiceConnection mConnection = null;
+	private IAFelixService mAFelixService = null;
+	private Intent intent;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_afelix);
+		
+		TextView info =  (TextView) findViewById(R.id.BundleInfo);
+		buildServiceConnection();
+		
+		intent = new Intent(IAFelixService.class.getName());
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
@@ -32,4 +51,31 @@ public class AFelixActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	private void buildServiceConnection(){
+		
+		mConnection = new ServiceConnection(){
+
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				// TODO Auto-generated method stub
+				try{
+					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
+						mAFelixService = IAFelixService.Stub.asInterface(service);
+					}
+				}catch (RemoteException re){
+					re.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				// TODO Auto-generated method stub
+				Toast.makeText(AFelixActivity.this, "Service has unexpected disconnected", Toast.LENGTH_LONG).show();
+				mAFelixService = null;
+			}
+			
+		};
+	}
+	
 }

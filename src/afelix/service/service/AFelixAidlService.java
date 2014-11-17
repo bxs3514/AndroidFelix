@@ -12,6 +12,8 @@
 
 package afelix.service.service;
 
+import java.util.ArrayList;
+
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleException;
 
@@ -21,9 +23,12 @@ import afelix.service.interfaces.BundlePresent;
 import afelix.service.interfaces.IAFelixService;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Toast;
 
 public class AFelixAidlService extends Service{
 
@@ -33,6 +38,8 @@ public class AFelixAidlService extends Service{
 	private LaunchFelix launchFelix = null;
 	private FelixControler fc = null;
 	
+	private ArrayList<String> info = null;
+	
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
@@ -40,6 +47,9 @@ public class AFelixAidlService extends Service{
 		
 		launchFelix = new LaunchFelix(main_felix_framework);
 		fc = new FelixControler(main_felix_framework);
+		info = new ArrayList<String>();
+		
+		show("Service has been created.");
 	}
 
 	@Override
@@ -62,6 +72,19 @@ public class AFelixAidlService extends Service{
 		AFelixServiceBinder = null;
 	}
 	
+	private void show(final String info){
+		Handler handler = new Handler(Looper.getMainLooper());
+		handler.post(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+			}
+			
+		});
+	}
+	
 	private IAFelixService.Stub AFelixServiceBinder = new IAFelixService.Stub() {
 		
 		@Override
@@ -75,6 +98,7 @@ public class AFelixAidlService extends Service{
 				throws RemoteException {
 			// TODO Auto-generated method stub
 			fc.install(bundle, location, 2);
+			show("Bundle:"+ bundle + "has been installed.");
 		}
 		
 		@Override
@@ -107,6 +131,21 @@ public class AFelixAidlService extends Service{
 			// TODO Auto-generated method stub
 			
 		}
+
+
+		@Override
+		public void getAll() throws RemoteException {
+			// TODO Auto-generated method stub
+
+			fc.BundleInfo(main_felix_framework, 4);
+		}
+		
+		
+		@Override
+		public int getBundleId(String bundle) throws RemoteException {
+			// TODO Auto-generated method stub
+			return -1;
+		}
 		
 		@Override
 		public BundlePresent getBundlesContainer(String bundle)
@@ -115,17 +154,13 @@ public class AFelixAidlService extends Service{
 			return null;
 		}
 		
-		@Override
-		public int getBundleId(String bundle) throws RemoteException {
-			// TODO Auto-generated method stub
-			return 0;
-		}
 		
 		@Override
 		public String dependency(String bundle) throws RemoteException {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
 	};
 	
 }
