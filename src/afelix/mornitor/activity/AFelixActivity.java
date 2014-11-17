@@ -32,7 +32,15 @@ public class AFelixActivity extends ActionBarActivity {
 		intent = new Intent(IAFelixService.class.getName());
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 	}
-
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		
+		if(mConnection != null)
+			unbindService(mConnection);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -59,11 +67,16 @@ public class AFelixActivity extends ActionBarActivity {
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
 				// TODO Auto-generated method stub
+				
 				try{
+					
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
+						String s = mAFelixService.getAll();
+						Toast.makeText(AFelixActivity.this, "!!!", Toast.LENGTH_LONG).show();
 					}
 				}catch (RemoteException re){
+					
 					re.printStackTrace();
 				}
 			}
@@ -76,6 +89,7 @@ public class AFelixActivity extends ActionBarActivity {
 			}
 			
 		};
+		//Toast.makeText(AFelixActivity.this, mConnection.toString(), Toast.LENGTH_LONG).show();
 	}
 	
 }

@@ -20,7 +20,7 @@ interface IAFelixService{
 	void uninstallBundle(String bundle_id);
 	void startBundle(String bundle);
 	void stopBundle(String bundle);
-	void getAll();
+	String getAll();
 	int getBundleId(String bundle);
 	BundlePresent getBundlesContainer(String bundle);
 	String dependency(String bundle);

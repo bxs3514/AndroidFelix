@@ -22,11 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
-        </activity>
-        <service android:name="afelix.service.service.AFelixAidlService"></service>
+        <service android:name=".AFelixAidlService" android:process=":remote">
+            <intent-filter>
+                <action android:name="afelix.service.interfaces.IAFelixService"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

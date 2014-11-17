@@ -13,6 +13,7 @@
 package afelix.service.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleException;
@@ -72,14 +73,14 @@ public class AFelixAidlService extends Service{
 		AFelixServiceBinder = null;
 	}
 	
-	private void show(final String info){
+	private void show(final String s){
 		Handler handler = new Handler(Looper.getMainLooper());
 		handler.post(new Runnable(){
 
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
 			}
 			
 		});
@@ -134,10 +135,17 @@ public class AFelixAidlService extends Service{
 
 
 		@Override
-		public void getAll() throws RemoteException {
+		public String getAll() throws RemoteException {
 			// TODO Auto-generated method stub
 
-			fc.BundleInfo(main_felix_framework, 4);
+			String res = null;
+			ArrayList<String> as =  fc.BundleInfo(main_felix_framework, 4);
+			Iterator<String> it = as.iterator();
+			
+			while(it.hasNext()){
+				res += it.next();
+			}
+			return "Fack!";
 		}
 		
 		
