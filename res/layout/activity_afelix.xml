@@ -14,7 +14,7 @@
         android:orientation="vertical" >
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/command"
             android:layout_width="228dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="17dp"
@@ -25,14 +25,28 @@
             <requestFocus />
         </EditText>
 
-        <Button
-            android:id="@+id/confirm"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirm" />
+            android:layout_weight="1.17" >
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="114dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.20"
+                android:text="Confirm" />
+
+            <Button
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.17"
+                android:text="Refresh" />
+        </LinearLayout>
         
         <TextView
-	        android:id="@+id/BundleInfo"
+	        android:id="@+id/bundleInfo"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentTop="true"

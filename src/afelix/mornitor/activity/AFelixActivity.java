@@ -22,17 +22,26 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AFelixActivity extends ActionBarActivity {
+public class AFelixActivity extends ActionBarActivity implements OnClickListener{
 
+	final private static String TAG = "AFelixActivity";
+	
 	private ServiceConnection mConnection = null;
 	private IAFelixService mAFelixService = null;
 	
 	private TextView BundleInfo = null;
+	private EditText Command = null;
+	private Button Confirm = null;
 	private Intent intent;
 	
 	@Override
@@ -40,8 +49,7 @@ public class AFelixActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_afelix);
 		
-		BundleInfo =  (TextView) findViewById(R.id.BundleInfo);
-		BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n");
+		initViews();
 		buildServiceConnection();
 		
 		intent = new Intent(IAFelixService.class.getName());
@@ -54,6 +62,22 @@ public class AFelixActivity extends ActionBarActivity {
 		
 		if(mConnection != null)
 			unbindService(mConnection);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId()){
+		case R.id.confirm:
+			try {
+				mAFelixService.interpret(Command.getText().toString());
+				Refresh();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		}
 	}
 	
 	@Override
@@ -85,12 +109,13 @@ public class AFelixActivity extends ActionBarActivity {
 				try{
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
-						mAFelixService.installBundleByLocation("Helloosgi_1.0.0.jar", "/sdcard/bundle/");
+						//mAFelixService.installBundleByLocation("Helloosgi_1.0.0.jar", "/sdcard/bundle/");
 						
 						String s = mAFelixService.getAll();
 						BundleInfo.append(s);
-						
-						
+						   
+						//mAFelixService.uninstallBundle("Helloosgi_1.0.0.jar");
+						//Refresh();
 						//Toast.makeText(AFelixActivity.this, s, Toast.LENGTH_LONG).show();
 					}
 				}catch (RemoteException re){
@@ -109,14 +134,25 @@ public class AFelixActivity extends ActionBarActivity {
 		};
 	}
 	
+	private void initViews(){
+		BundleInfo =  (TextView)findViewById(R.id.bundleInfo);
+		BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n");
+		Command = (EditText)findViewById(R.id.command);
+		Confirm = (Button)findViewById(R.id.confirm);
+		Confirm.setOnClickListener(this);
+	}
+	
 	private void Refresh(){
-		String s = new String();
 		try {
-			s = mAFelixService.getAll();
+			String s = mAFelixService.getAll();
+			BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n" + s);
+			
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
+			Log.e(TAG, "Service has unexpected disconnected.", e);
 			e.printStackTrace();
 		}
-		BundleInfo.append(s);
 	}
+
+
 }

@@ -25,5 +25,5 @@ interface IAFelixService{
 	int getBundleId(String bundle);
 	BundlePresent getBundlesContainer(String bundle);
 	String dependency(String bundle);
-	
+	void interpret(String command);
 }

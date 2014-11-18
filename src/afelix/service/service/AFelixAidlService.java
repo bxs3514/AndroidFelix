@@ -124,28 +124,28 @@ public class AFelixAidlService extends Service{
 		public void installBundleByLocation(String bundle, String location)
 				throws RemoteException {
 			// TODO Auto-generated method stub
-			show(fc.install(bundle, location, 2));
+			show(fc.install(bundle, location));
 		}
 		
 
 		@Override
 		public void startBundle(String bundle) throws RemoteException {
 			// TODO Auto-generated method stub
-			fc.start(bundle, 32);
-			show(fc.start(bundle, 32));
+			//fc.start(bundle);
+			show(fc.start(bundle));
 		}
 		
 		@Override
 		public void stopBundle(String bundle) throws RemoteException {
 			// TODO Auto-generated method stub
-			
+			show(fc.stop(bundle));
 		}
 		
 		
 		@Override
 		public void uninstallBundle(String bundle_id) throws RemoteException {
 			// TODO Auto-generated method stub
-			
+			show(fc.uninstall(bundle_id));
 		}
 
 
@@ -154,7 +154,7 @@ public class AFelixAidlService extends Service{
 			// TODO Auto-generated method stub
 
 			String res = new String();
-			ArrayList<String> as =  fc.BundleInfo(main_felix_framework, 4);
+			ArrayList<String> as =  fc.BundleInfo(4);
 			Iterator<String> it = as.iterator();
 			
 			while(it.hasNext()){
@@ -184,6 +184,12 @@ public class AFelixAidlService extends Service{
 			return null;
 		}
 
+
+		@Override
+		public void interpret(String command) throws RemoteException {
+			// TODO Auto-generated method stub
+			show(Boolean.toString(fc.interpret(command)));
+		}
 
 	};
 	

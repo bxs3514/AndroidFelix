@@ -147,6 +147,15 @@ reply.writeNoException();
 reply.writeString(_result);
 return true;
 }
+case TRANSACTION_interpret:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+this.interpret(_arg0);
+reply.writeNoException();
+return true;
+}
 }
 return super.onTransact(code, data, reply, flags);
 }
@@ -345,6 +354,21 @@ _data.recycle();
 }
 return _result;
 }
+@Override public void interpret(java.lang.String command) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(command);
+mRemote.transact(Stub.TRANSACTION_interpret, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
 }
 static final int TRANSACTION_startFelix = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
 static final int TRANSACTION_stopFelix = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
@@ -357,6 +381,7 @@ static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION
 static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
 static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
 static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 10);
+static final int TRANSACTION_interpret = (android.os.IBinder.FIRST_CALL_TRANSACTION + 11);
 }
 public void startFelix() throws android.os.RemoteException;
 public void stopFelix() throws android.os.RemoteException;
@@ -369,4 +394,5 @@ public java.lang.String getAll() throws android.os.RemoteException;
 public int getBundleId(java.lang.String bundle) throws android.os.RemoteException;
 public afelix.service.interfaces.BundlePresent getBundlesContainer(java.lang.String bundle) throws android.os.RemoteException;
 public java.lang.String dependency(java.lang.String bundle) throws android.os.RemoteException;
+public void interpret(java.lang.String command) throws android.os.RemoteException;
 }

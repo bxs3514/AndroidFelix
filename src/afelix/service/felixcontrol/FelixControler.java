@@ -16,10 +16,13 @@ public class FelixControler {
 	final private static String TAG = "FelixControler";
 	
 	private Felix felixFramework = null;
+	private ConsoleInterpreter mInterpreter = null;
+	
 	private String res = new String();
 	
-	public FelixControler(Felix f){
-		this.felixFramework = f;
+	public FelixControler(Felix felixFramework){
+		this.felixFramework = felixFramework;
+		this.mInterpreter = new ConsoleInterpreter(this);
 	}
 	
 	public String install(Context context, String bundle, int command){
@@ -29,25 +32,34 @@ public class FelixControler {
 	}
 	
 	
-	public String install(String bundle, String location, int command){
+	public String install(String bundle, String location){
 		Log.d(TAG, "About to install bundle: " + bundle);
-		res = this.MainControler(bundle, location, command);
+		res = this.MainControler(bundle, location, 2);
 		return res;
 	}
 	
-	public String start(String bundle, int command){
+	public String uninstall(String bundle){
+		Log.d(TAG, "About to uninstall bundle: " + bundle);
+		res = this.MainControler(bundle, "", 1);
+		return res;
+	}
+	
+	public String start(String bundle){
 		Log.d(TAG, "About to start bundle: " + bundle);
-		res = this.MainControler(bundle, "", command);
+		res = this.MainControler(bundle, "", 32);
 		return res;
 	}
  
+	public String stop(String bundle){
+		Log.d(TAG, "About to start bundle: " + bundle);
+		res = this.MainControler(bundle, "", 16);
+		return res;
+	}
 	
 	private String MainControler(String bundle, String location, int command){
 		
 		//Main command execution block
 		switch(command){
-		case 1:
-			return "Bundle:" + bundle + "has uninstalled successfully";
 		case 2://install bundle
 			FileInputStream bs = null;
 			
@@ -81,8 +93,8 @@ public class FelixControler {
 			}
 				
 			return "Bundle:" + bundle + "has installed successfully";
-		case 16:
-			return "Bundle:" + bundle + "has stoped successfully";
+		case 1://return "Bundle:" + bundle + "has uninstalled successfully";
+		case 16://
 		case 32://start bundle
 			long bid = -1;
 				
@@ -95,19 +107,42 @@ public class FelixControler {
 
 	        org.osgi.framework.Bundle b = felixFramework.getBundleContext().getBundle(bid);
 	        if (b == null) {
-	        	System.out.println("Can't find bundle " + bundle);
+	        	Log.e(TAG, "Can't find bundle " + bundle);
 	            return "Can't find bundle " + bundle;
 	        }
-
-	        try {
-	            b.start(org.osgi.framework.Bundle.START_ACTIVATION_POLICY);
-	            
-	            System.out.println("bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
-	                    + b + " started");
-	        } catch (BundleException be) {
-	        	System.out.println(be.toString());
+	        
+	        switch(command){
+	        case 1:
+	        	try {
+		            b.uninstall();
+		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
+		                    + b + " has uninstalled from felix.");
+		        } catch (BundleException be) {
+		        	Log.e(TAG, be.toString(), be);
+		        }
+	        	return "Bundle:" + bundle + "has installed successfully";
+	        case 16:
+	        	try {
+		            b.stop(org.osgi.framework.Bundle.RESOLVED);
+		            
+		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
+		                    + b + " stopped");
+		        } catch (BundleException be) {
+		        	Log.e(TAG, be.toString(), be);
+		        }
+	        	return "Bundle:" + bundle + "has stoped successfully";
+	        case 32:
+	        	try {
+	        		
+		            b.start(org.osgi.framework.Bundle.START_ACTIVATION_POLICY);
+		            
+		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
+		                    + b + " started");
+		        } catch (BundleException be) {
+		        	System.out.println(be.toString());
+		        }
+				return "Bundle:" + bundle + "has started successfully";
 	        }
-			return "Bundle:" + bundle + "has started successfully";
 		default:
 			return "Invalid command.";   
 		}
@@ -149,10 +184,10 @@ public class FelixControler {
 	}
 	
 	
-	public ArrayList<String> BundleInfo(Felix f, int command){
+	public ArrayList<String> BundleInfo(int command){
 		ArrayList<String> as = new ArrayList<String>();
 		
-		for(org.osgi.framework.Bundle b : f.getBundleContext().getBundles()) {
+		for(org.osgi.framework.Bundle b : felixFramework.getBundleContext().getBundles()) {
 			switch(command){
 			case 1:
 				as.add(Long.toString(b.getBundleId()));
@@ -168,5 +203,9 @@ public class FelixControler {
 			}
 		}
 		return as;
+	}
+	
+	public boolean interpret(String command){
+		return mInterpreter.interpret(command);
 	}
 }
