@@ -46,11 +46,12 @@ public class AFelixAidlService extends Service{
 		// TODO Auto-generated method stub
 		super.onCreate();
 		
-		launchFelix = new LaunchFelix(main_felix_framework);
+		launchFelix = new LaunchFelix();
+		main_felix_framework = launchFelix.Launch();
 		fc = new FelixControler(main_felix_framework);
 		info = new ArrayList<String>();
 		
-		show("Service has been created.");
+		Log.d(TAG, "Service has been created.");
 	}
 
 	@Override
@@ -89,20 +90,6 @@ public class AFelixAidlService extends Service{
 	private IAFelixService.Stub AFelixServiceBinder = new IAFelixService.Stub() {
 		
 		@Override
-		public void installBundle(String bundle) throws RemoteException {
-			// TODO Auto-generated method stub
-			fc.install(AFelixAidlService.this, bundle,  2);
-		}
-		
-		@Override
-		public void installBundleByLocation(String bundle, String location)
-				throws RemoteException {
-			// TODO Auto-generated method stub
-			fc.install(bundle, location, 2);
-			show("Bundle:"+ bundle + "has been installed.");
-		}
-		
-		@Override
 		public void startFelix() throws RemoteException {
 			// TODO Auto-generated method stub
 			try {
@@ -111,6 +98,34 @@ public class AFelixAidlService extends Service{
 				// TODO Auto-generated catch block
 				Log.e(TAG, "Can't start felix for:"+e.toString(), e);
 			}
+		}
+		
+
+		@Override
+		public void stopFelix() throws RemoteException {
+			// TODO Auto-generated method stub
+			try {
+				main_felix_framework.stop();
+			} catch (BundleException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, "Can't stop felix for:"+e.toString(), e);
+			}
+		}
+		
+		
+		@Override
+		public void installBundle(String bundle) throws RemoteException {
+			// TODO Auto-generated method stub
+			fc.install(AFelixAidlService.this, bundle,  2);
+		}
+		
+		
+		@Override
+		public void installBundleByLocation(String bundle, String location)
+				throws RemoteException {
+			// TODO Auto-generated method stub
+			fc.install(bundle, location, 2);
+			show("Bundle:"+ bundle + "has been installed.");
 		}
 		
 
@@ -138,14 +153,14 @@ public class AFelixAidlService extends Service{
 		public String getAll() throws RemoteException {
 			// TODO Auto-generated method stub
 
-			String res = null;
+			String res = new String();
 			ArrayList<String> as =  fc.BundleInfo(main_felix_framework, 4);
 			Iterator<String> it = as.iterator();
 			
 			while(it.hasNext()){
 				res += it.next();
 			}
-			return "Fack!";
+			return res;
 		}
 		
 		
@@ -168,6 +183,7 @@ public class AFelixAidlService extends Service{
 			// TODO Auto-generated method stub
 			return null;
 		}
+
 
 	};
 	

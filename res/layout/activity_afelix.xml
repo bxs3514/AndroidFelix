@@ -17,4 +17,32 @@
         android:layout_marginTop="38dp"
          />
 
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/BundleInfo"
+        android:layout_alignTop="@+id/BundleInfo"
+        android:text="name" />
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/title2"
+        android:layout_alignBottom="@+id/title2"
+        android:layout_marginRight="61dp"
+        android:layout_toLeftOf="@+id/title2"
+        android:text="Id" />
+
+    <TextView
+        android:id="@+id/title3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/title2"
+        android:layout_alignBottom="@+id/title2"
+        android:layout_marginLeft="36dp"
+        android:layout_toRightOf="@+id/BundleInfo"
+        android:text="status" />
+
 </RelativeLayout>

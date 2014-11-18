@@ -49,6 +49,13 @@ this.startFelix();
 reply.writeNoException();
 return true;
 }
+case TRANSACTION_stopFelix:
+{
+data.enforceInterface(DESCRIPTOR);
+this.stopFelix();
+reply.writeNoException();
+return true;
+}
 case TRANSACTION_installBundle:
 {
 data.enforceInterface(DESCRIPTOR);
@@ -165,6 +172,20 @@ android.os.Parcel _reply = android.os.Parcel.obtain();
 try {
 _data.writeInterfaceToken(DESCRIPTOR);
 mRemote.transact(Stub.TRANSACTION_startFelix, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
+@Override public void stopFelix() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_stopFelix, _data, _reply, 0);
 _reply.readException();
 }
 finally {
@@ -326,17 +347,19 @@ return _result;
 }
 }
 static final int TRANSACTION_startFelix = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
-static final int TRANSACTION_installBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
-static final int TRANSACTION_installBundleByLocation = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
-static final int TRANSACTION_uninstallBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 3);
-static final int TRANSACTION_startBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 4);
-static final int TRANSACTION_stopBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
-static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
-static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
-static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
-static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
+static final int TRANSACTION_stopFelix = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+static final int TRANSACTION_installBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
+static final int TRANSACTION_installBundleByLocation = (android.os.IBinder.FIRST_CALL_TRANSACTION + 3);
+static final int TRANSACTION_uninstallBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 4);
+static final int TRANSACTION_startBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
+static final int TRANSACTION_stopBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
+static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
+static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
+static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
+static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 10);
 }
 public void startFelix() throws android.os.RemoteException;
+public void stopFelix() throws android.os.RemoteException;
 public void installBundle(java.lang.String bundle) throws android.os.RemoteException;
 public void installBundleByLocation(java.lang.String bundle, java.lang.String location) throws android.os.RemoteException;
 public void uninstallBundle(java.lang.String bundle_id) throws android.os.RemoteException;

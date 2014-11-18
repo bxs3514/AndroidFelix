@@ -24,15 +24,10 @@ import android.util.Log;
 public class LaunchFelix {
 	private static final String TAG = "LaunchFelix";
 	
-	private Felix felixFramework = null;
 	private Map<String, String> configMap = null;
+	private Felix felixFramework = null;
 	
-	public LaunchFelix(Felix f){
-		felixFramework = f;
-		Launch();
-	}
-	
-	private void Launch(){
+	public Felix Launch(){
 		
 		String cacheDir = null;
     	try {
@@ -42,7 +37,7 @@ public class LaunchFelix {
 		}
     	catch (IOException e){
 			Log.d(TAG, "unable to create temp file", e);
-			return;
+			return null;
 		} 
     	
 		Log.d(TAG, "Config the framework.");
@@ -66,5 +61,8 @@ public class LaunchFelix {
 		}catch(Throwable ex){
 			Log.e(TAG, "Couldn't create framework: " + ex.getMessage(), ex);
 		}
+		
+		return felixFramework;
 	}
+	
 }

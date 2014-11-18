@@ -15,6 +15,7 @@ import afelix.service.interfaces.BundlePresent;
 interface IAFelixService{
 	
 	void startFelix();
+	void stopFelix();
 	void installBundle(String bundle);
 	void installBundleByLocation(String bundle, String location);
 	void uninstallBundle(String bundle_id);

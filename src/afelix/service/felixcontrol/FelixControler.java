@@ -121,7 +121,7 @@ public class FelixControler {
 				as.add(b.getSymbolicName());
 				break;
 			case 4:
-				as.add(b.getBundleId()+" Bundle: \t" + b.getState() + "\t name: "+b.getSymbolicName());
+				as.add(b.getBundleId()+" \t" + b.getSymbolicName() + "\t"+b.getState());
 				break;
 			default:
 				Log.e(TAG, "Invalid command.");

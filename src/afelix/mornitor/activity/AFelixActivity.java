@@ -19,6 +19,8 @@ public class AFelixActivity extends ActionBarActivity {
 
 	private ServiceConnection mConnection = null;
 	private IAFelixService mAFelixService = null;
+	
+	private TextView BundleInfo = null;
 	private Intent intent;
 	
 	@Override
@@ -26,7 +28,7 @@ public class AFelixActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_afelix);
 		
-		TextView info =  (TextView) findViewById(R.id.BundleInfo);
+		BundleInfo =  (TextView) findViewById(R.id.BundleInfo);
 		buildServiceConnection();
 		
 		intent = new Intent(IAFelixService.class.getName());
@@ -67,13 +69,12 @@ public class AFelixActivity extends ActionBarActivity {
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
 				// TODO Auto-generated method stub
-				
 				try{
-					
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
 						String s = mAFelixService.getAll();
-						Toast.makeText(AFelixActivity.this, "!!!", Toast.LENGTH_LONG).show();
+						BundleInfo.setText(s);
+						//Toast.makeText(AFelixActivity.this, s, Toast.LENGTH_LONG).show();
 					}
 				}catch (RemoteException re){
 					
@@ -89,7 +90,6 @@ public class AFelixActivity extends ActionBarActivity {
 			}
 			
 		};
-		//Toast.makeText(AFelixActivity.this, mConnection.toString(), Toast.LENGTH_LONG).show();
 	}
 	
 }
