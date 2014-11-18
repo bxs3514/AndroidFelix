@@ -1,3 +1,15 @@
+
+/**
+ * 
+ * @author bxs3514
+ *
+ * This is a monitor to show the bundle states to users.
+ *
+ * @lastEdit 11/18/2014
+ * 
+ */
+
+
 package afelix.mornitor.activity;
 
 import afelix.afelixservice.androidfelix.R;
@@ -29,6 +41,7 @@ public class AFelixActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_afelix);
 		
 		BundleInfo =  (TextView) findViewById(R.id.BundleInfo);
+		BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n");
 		buildServiceConnection();
 		
 		intent = new Intent(IAFelixService.class.getName());
@@ -72,8 +85,12 @@ public class AFelixActivity extends ActionBarActivity {
 				try{
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
+						mAFelixService.installBundleByLocation("Helloosgi_1.0.0.jar", "/sdcard/bundle/");
+						
 						String s = mAFelixService.getAll();
-						BundleInfo.setText(s);
+						BundleInfo.append(s);
+						
+						
 						//Toast.makeText(AFelixActivity.this, s, Toast.LENGTH_LONG).show();
 					}
 				}catch (RemoteException re){
@@ -92,4 +109,14 @@ public class AFelixActivity extends ActionBarActivity {
 		};
 	}
 	
+	private void Refresh(){
+		String s = new String();
+		try {
+			s = mAFelixService.getAll();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BundleInfo.append(s);
+	}
 }

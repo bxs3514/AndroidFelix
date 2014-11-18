@@ -8,41 +8,37 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="afelix.mornitor.activity.AFelixActivity" >
 
-    <TextView
-        android:id="@+id/BundleInfo"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="38dp"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="228dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="40dp"
+            android:layout_weight="1.17"
+            android:ems="10" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm" />
+        
+        <TextView
+	        android:id="@+id/BundleInfo"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="83dp"
          />
-
-    <TextView
-        android:id="@+id/title2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/BundleInfo"
-        android:layout_alignTop="@+id/BundleInfo"
-        android:text="name" />
-
-    <TextView
-        android:id="@+id/title1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/title2"
-        android:layout_alignBottom="@+id/title2"
-        android:layout_marginRight="61dp"
-        android:layout_toLeftOf="@+id/title2"
-        android:text="Id" />
-
-    <TextView
-        android:id="@+id/title3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/title2"
-        android:layout_alignBottom="@+id/title2"
-        android:layout_marginLeft="36dp"
-        android:layout_toRightOf="@+id/BundleInfo"
-        android:text="status" />
+    </LinearLayout>
 
 </RelativeLayout>

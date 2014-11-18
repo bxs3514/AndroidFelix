@@ -4,9 +4,9 @@
  * @author bxs3514
  *
  * This is the android felix manage service interface 
- * that expose to the user
+ * that expose to users
  *
- * @lastEdit 11/10/2014
+ * @lastEdit 11/18/2014
  * 
  */
 
@@ -124,15 +124,15 @@ public class AFelixAidlService extends Service{
 		public void installBundleByLocation(String bundle, String location)
 				throws RemoteException {
 			// TODO Auto-generated method stub
-			fc.install(bundle, location, 2);
-			show("Bundle:"+ bundle + "has been installed.");
+			show(fc.install(bundle, location, 2));
 		}
 		
 
 		@Override
 		public void startBundle(String bundle) throws RemoteException {
 			// TODO Auto-generated method stub
-			
+			fc.start(bundle, 32);
+			show(fc.start(bundle, 32));
 		}
 		
 		@Override
@@ -158,7 +158,7 @@ public class AFelixAidlService extends Service{
 			Iterator<String> it = as.iterator();
 			
 			while(it.hasNext()){
-				res += it.next();
+				res += it.next() + "\n";
 			}
 			return res;
 		}

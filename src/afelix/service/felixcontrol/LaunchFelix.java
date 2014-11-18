@@ -5,7 +5,7 @@
  *
  * This is a android felix launcher.
  *
- * @lastEdit 11/9/2014
+ * @lastEdit 11/18/2014
  * 
  */
 
@@ -55,6 +55,7 @@ public class LaunchFelix {
 		try{
 			
 			this.felixFramework = new Felix(configMap);
+			this.felixFramework.init();
 			this.felixFramework.start();
 			Log.d(TAG, "The felix framework start successfully.");
 			
