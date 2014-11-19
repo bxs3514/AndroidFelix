@@ -28,7 +28,7 @@ public class ConsoleInterpreter{
 		this.fc = fc;
 	}
 	
-	public boolean interpret(String command){
+	public String interpret(String command){
 		this.command = command.toLowerCase();
 		String[] cwords = command.split(" ");
 		if(cwords[0].equals("ss")){
@@ -45,29 +45,29 @@ public class ConsoleInterpreter{
 				|| cwords[0].equals("uninstall")){
 			if(cwords.length != 2){
 				Log.e(TAG, "Wrong command!");
-				return false;
+				return "Wrong command!";
 			}
 			
-			if(cwords[0].equals("start")) fc.start(cwords[1]);
-			else if(cwords[0].equals("stop")) fc.stop(cwords[1]);
-			else if	(cwords[0].equals("uninstall")) fc.uninstall(cwords[1]);
+			if(cwords[0].equals("start")) return(fc.start(cwords[1]));
+			else if(cwords[0].equals("stop")) return(fc.stop(cwords[1]));
+			else if	(cwords[0].equals("uninstall")) return(fc.uninstall(cwords[1]));
 			else{
 				Log.e(TAG, "Wrong command!");
-				return false;
+				return "Wrong command!";
 			}
 		}
 		else if(cwords[0].equals("install")){
 			if(cwords.length != 3){
 				Log.e(TAG, "Wrong command!");
-				return false;
+				return "Wrong command!";
 			}
-			fc.install(cwords[2], cwords[1]);
+			return(fc.install(cwords[2], cwords[1]));
 		}
 		else{
 			Log.e(TAG, "Wrong command!");
-			return false;
+			return "Wrong command!";
 		}
 		
-		return true;
+		return "Success";
 	}
 }

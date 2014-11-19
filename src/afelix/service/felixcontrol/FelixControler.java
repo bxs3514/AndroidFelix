@@ -93,22 +93,38 @@ public class FelixControler {
 			}
 				
 			return "Bundle:" + bundle + "has installed successfully";
-		case 1://return "Bundle:" + bundle + "has uninstalled successfully";
-		case 16://
-		case 32://start bundle
+		case 1://uninstall a bundle
+		case 16://stop a bundle
+		case 32://start a bundle
 			long bid = -1;
-				
-			org.osgi.framework.Bundle[] bl = felixFramework.getBundleContext().getBundles();
-	        for (int i = 0; bl != null && i < bl.length; i++) {
-	            if (bundle.equals(bl[i].getLocation())) {
-	                bid = bl[i].getBundleId();
-	            }
-	        }
+			boolean isLong = false;
+			
+			for(int i = 0; i < bundle.length(); i++){
+				Log.d(TAG, String.valueOf(bundle.charAt(i)));
+				if(bundle.charAt(i) < '0' && bundle.charAt(i) > '9') break;
+				if(i == bundle.length() - 1){
+					bid = Long.parseLong(bundle);
+					if(bid == 0) return "Permission denied.";
+					isLong = true;
+				}
+			}
+			
+			if(!isLong){
+				org.osgi.framework.Bundle[] bl = felixFramework.getBundleContext().getBundles();
+		        for (int i = 0; bl != null && i < bl.length; i++) {
+		        	org.osgi.framework.Bundle tempBundle = bl[i];
+		        	Log.d(TAG, bundle+"?"+tempBundle.getBundleId());
+		            if (bundle.equals(tempBundle.getBundleId()) || bundle.equals(tempBundle.getLocation())  
+		            		|| bundle.equals(tempBundle.getSymbolicName())) {
+		                bid = tempBundle.getBundleId();
+		            }
+		        }
+			}
 
 	        org.osgi.framework.Bundle b = felixFramework.getBundleContext().getBundle(bid);
 	        if (b == null) {
-	        	Log.e(TAG, "Can't find bundle " + bundle);
-	            return "Can't find bundle " + bundle;
+	        	Log.e(TAG, "The bundle " + bundle + " doesn't exist.");
+	            return "The bundle " + bundle + " doesn't exist.";
 	        }
 	        
 	        switch(command){
@@ -196,7 +212,22 @@ public class FelixControler {
 				as.add(b.getSymbolicName());
 				break;
 			case 4:
-				as.add(b.getBundleId()+" \t\t" + b.getSymbolicName() + "\t\t"+b.getState());
+				switch(b.getState()){
+				case 2:
+					as.add(b.getBundleId()+" \t\t" + b.getSymbolicName() + "\t\t INSTALLED");
+					break;
+				case 4:
+					as.add(b.getBundleId()+" \t\t" + b.getSymbolicName() + "\t\t RESOLVED");
+					break;
+				case 8:
+					as.add(b.getBundleId()+" \t\t" + b.getSymbolicName() + "\t\t STARTING");
+					break;
+				case 16:
+					as.add(b.getBundleId()+" \t\t" + b.getSymbolicName() + "\t\t STOPPING");
+					break;
+				case 32:
+					as.add(b.getBundleId()+" \t\t" + b.getSymbolicName() + "\t\t ACTIVE");
+				}
 				break;
 			default:
 				Log.e(TAG, "Invalid command.");
@@ -205,7 +236,7 @@ public class FelixControler {
 		return as;
 	}
 	
-	public boolean interpret(String command){
+	public String interpret(String command){
 		return mInterpreter.interpret(command);
 	}
 }

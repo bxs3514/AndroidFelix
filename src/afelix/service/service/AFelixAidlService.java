@@ -39,7 +39,8 @@ public class AFelixAidlService extends Service{
 	private LaunchFelix launchFelix = null;
 	private FelixControler fc = null;
 	
-	private ArrayList<String> info = null;
+	String res = new String();
+	//private ArrayList<String> info = null;
 	
 	@Override
 	public void onCreate() {
@@ -49,7 +50,7 @@ public class AFelixAidlService extends Service{
 		launchFelix = new LaunchFelix();
 		main_felix_framework = launchFelix.Launch();
 		fc = new FelixControler(main_felix_framework);
-		info = new ArrayList<String>();
+		//info = new ArrayList<String>();
 		
 		Log.d(TAG, "Service has been created.");
 	}
@@ -167,7 +168,13 @@ public class AFelixAidlService extends Service{
 		@Override
 		public int getBundleId(String bundle) throws RemoteException {
 			// TODO Auto-generated method stub
-			return -1;
+			ArrayList<String> as =  fc.BundleInfo(2);
+			Iterator<String> it = as.iterator();
+			
+			while(it.hasNext()){
+				res += it.next() + "\n";
+			}
+			return Integer.parseInt(res);
 		}
 		
 		@Override
@@ -186,9 +193,13 @@ public class AFelixAidlService extends Service{
 
 
 		@Override
-		public void interpret(String command) throws RemoteException {
+		public boolean interpret(String command) throws RemoteException {
 			// TODO Auto-generated method stub
-			show(Boolean.toString(fc.interpret(command)));
+			String res = fc.interpret(command);
+			show(res);
+			
+			if(res.equals("Wrong command!")) return false;
+			else return true;
 		}
 
 	};

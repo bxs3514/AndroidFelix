@@ -152,8 +152,9 @@ case TRANSACTION_interpret:
 data.enforceInterface(DESCRIPTOR);
 java.lang.String _arg0;
 _arg0 = data.readString();
-this.interpret(_arg0);
+boolean _result = this.interpret(_arg0);
 reply.writeNoException();
+reply.writeInt(((_result)?(1):(0)));
 return true;
 }
 }
@@ -354,20 +355,23 @@ _data.recycle();
 }
 return _result;
 }
-@Override public void interpret(java.lang.String command) throws android.os.RemoteException
+@Override public boolean interpret(java.lang.String command) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 android.os.Parcel _reply = android.os.Parcel.obtain();
+boolean _result;
 try {
 _data.writeInterfaceToken(DESCRIPTOR);
 _data.writeString(command);
 mRemote.transact(Stub.TRANSACTION_interpret, _data, _reply, 0);
 _reply.readException();
+_result = (0!=_reply.readInt());
 }
 finally {
 _reply.recycle();
 _data.recycle();
 }
+return _result;
 }
 }
 static final int TRANSACTION_startFelix = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
@@ -394,5 +398,5 @@ public java.lang.String getAll() throws android.os.RemoteException;
 public int getBundleId(java.lang.String bundle) throws android.os.RemoteException;
 public afelix.service.interfaces.BundlePresent getBundlesContainer(java.lang.String bundle) throws android.os.RemoteException;
 public java.lang.String dependency(java.lang.String bundle) throws android.os.RemoteException;
-public void interpret(java.lang.String command) throws android.os.RemoteException;
+public boolean interpret(java.lang.String command) throws android.os.RemoteException;
 }

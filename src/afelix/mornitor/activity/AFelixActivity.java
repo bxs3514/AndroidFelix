@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class AFelixActivity extends ActionBarActivity implements OnClickListener{
@@ -42,7 +44,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	private TextView BundleInfo = null;
 	private EditText Command = null;
 	private Button Confirm = null;
-	private Intent intent;
+	private Button Refresh = null;
+	private Intent intent = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +73,19 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		switch(v.getId()){
 		case R.id.confirm:
 			try {
-				mAFelixService.interpret(Command.getText().toString());
-				Refresh();
+				if(mAFelixService.interpret(Command.getText().toString())){
+					Refresh();
+					Command.setText("");
+				}
+				else 
+					Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			break;
+		case R.id.refresh:
+			Refresh();
 			break;
 		}
 	}
@@ -138,8 +148,32 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		BundleInfo =  (TextView)findViewById(R.id.bundleInfo);
 		BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n");
 		Command = (EditText)findViewById(R.id.command);
+		Command.setOnEditorActionListener(new OnEditorActionListener(){
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				try {
+					if(mAFelixService.interpret(Command.getText().toString())){
+						Refresh();
+						Command.setText("");
+					}
+					else 
+						Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return true;
+			}
+			
+		});
+		
 		Confirm = (Button)findViewById(R.id.confirm);
 		Confirm.setOnClickListener(this);
+		Refresh = (Button)findViewById(R.id.refresh);
+		Refresh.setOnClickListener(this);
 	}
 	
 	private void Refresh(){

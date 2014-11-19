@@ -9,50 +9,57 @@
     tools:context="afelix.mornitor.activity.AFelixActivity" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical" >
 
         <EditText
             android:id="@+id/command"
-            android:layout_width="228dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="40dp"
-            android:layout_weight="1.17"
-            android:ems="10" >
+            android:ems="10"
+            android:hint="Input OSGi commands" 
+            android:imeOptions="actionGo" >
 
             <requestFocus />
         </EditText>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.17" >
+            android:layout_height="wrap_content" >
 
             <Button
                 android:id="@+id/confirm"
-                android:layout_width="114dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.20"
                 android:text="Confirm" />
 
             <Button
-                android:id="@+id/refresh"
+                android:id="@+id/Reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.17"
-                android:text="Refresh" />
+                android:layout_weight="0.20"
+                android:text="Reset" />
+
         </LinearLayout>
+
+        <Button
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Refresh" />
         
         <TextView
-	        android:id="@+id/bundleInfo"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentTop="true"
-	        android:layout_centerHorizontal="true"
-	        android:layout_marginTop="83dp"
-         />
+            android:id="@+id/bundleInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
     </LinearLayout>
 
 </RelativeLayout>
