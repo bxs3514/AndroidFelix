@@ -46,7 +46,7 @@ public class ConsoleInterpreter{
 
 	public String interpret(String command){
 		this.command = command.toLowerCase();
-		String[] cwords = command.split(" ");
+		String[] cwords = command.split("\\s+");
 		if(cwords[0].equals("ss")){
 			String res = new String();
 			ArrayList<String> as =  fc.BundleInfo(4);

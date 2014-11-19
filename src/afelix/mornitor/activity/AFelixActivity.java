@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -150,21 +151,24 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		BundleInfo =  (TextView)findViewById(R.id.bundleInfo);
 		BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n");
 		Command = (EditText)findViewById(R.id.command);
-		Command.setOnEditorActionListener(new OnEditorActionListener(){
+		Command.setOnEditorActionListener(new TextView.OnEditorActionListener(){
 
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
-				try {
-					if(mAFelixService.interpret(Command.getText().toString())){
-						Refresh();
-						Command.setText("");
+				if(actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_DONE
+						|| (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())){
+					try {
+						if(mAFelixService.interpret(Command.getText().toString())){
+							Refresh();
+							Command.setText("");
+						}
+						else 
+							Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					else 
-						Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 				
 				return true;

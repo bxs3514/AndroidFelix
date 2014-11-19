@@ -17,11 +17,13 @@
             android:id="@+id/command"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="40dp"
             android:ems="10"
-            android:hint="Input OSGi commands" 
-            android:imeOptions="actionGo" >
+            android:singleLine="true"
+            android:imeOptions="actionSend"
+            android:hint="Input OSGi commands"  >
 
             <requestFocus />
         </EditText>
