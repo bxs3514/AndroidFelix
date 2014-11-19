@@ -19,6 +19,7 @@ public class FelixControler {
 	private ConsoleInterpreter mInterpreter = null;
 	
 	private String res = new String();
+	private boolean su = false;
 	
 	public FelixControler(Felix felixFramework){
 		this.felixFramework = felixFramework;
@@ -104,7 +105,7 @@ public class FelixControler {
 				if(bundle.charAt(i) < '0' && bundle.charAt(i) > '9') break;
 				if(i == bundle.length() - 1){
 					bid = Long.parseLong(bundle);
-					if(bid == 0) return "Permission denied.";
+					if(bid == 0 && !su) return "Permission denied.";
 					isLong = true;
 				}
 			}
@@ -151,7 +152,7 @@ public class FelixControler {
 	        	try {
 	        		
 		            b.start(org.osgi.framework.Bundle.START_ACTIVATION_POLICY);
-		            
+	        		
 		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
 		                    + b + " started");
 		        } catch (BundleException be) {
@@ -238,5 +239,9 @@ public class FelixControler {
 	
 	public String interpret(String command){
 		return mInterpreter.interpret(command);
+	}
+
+	public void setSu(boolean su) {
+		this.su = su;
 	}
 }

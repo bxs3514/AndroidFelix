@@ -19,15 +19,31 @@ import android.util.Log;
 public class ConsoleInterpreter{
 	private final static String TAG = "ConsoleInterpreter";
 	
-	private String command = null;
 	private FelixControler fc = null;
 	
+	private String command = null;
+	private String defaultPath = null;
 	private boolean res;
 	
 	public ConsoleInterpreter(FelixControler fc) {
 		this.fc = fc;
+		defaultPath = "/sdcard/bundle/";
 	}
 	
+	
+	
+	public String getDefaultPath() {
+		return defaultPath;
+	}
+
+
+
+	public void setDefaultPath(String defaultPath) {
+		this.defaultPath = defaultPath;
+	}
+
+
+
 	public String interpret(String command){
 		this.command = command.toLowerCase();
 		String[] cwords = command.split(" ");
@@ -39,7 +55,11 @@ public class ConsoleInterpreter{
 			while(it.hasNext()){
 				res += it.next() + "\n";
 			}
-			//return res;
+			return res;
+		}
+		else if(cwords[0].equals("su")){
+			fc.setSu(true);
+			return "Root.";
 		}
 		else if(cwords[0].equals("start") || cwords[0].equals("stop")
 				|| cwords[0].equals("uninstall")){
@@ -57,17 +77,20 @@ public class ConsoleInterpreter{
 			}
 		}
 		else if(cwords[0].equals("install")){
-			if(cwords.length != 3){
+			
+			if(cwords.length == 2){
+				return(fc.install(cwords[1], defaultPath));
+			}
+			else if(cwords.length == 3) 
+				return(fc.install(cwords[2], cwords[1]));
+			else{
 				Log.e(TAG, "Wrong command!");
 				return "Wrong command!";
 			}
-			return(fc.install(cwords[2], cwords[1]));
 		}
 		else{
 			Log.e(TAG, "Wrong command!");
 			return "Wrong command!";
 		}
-		
-		return "Success";
 	}
 }

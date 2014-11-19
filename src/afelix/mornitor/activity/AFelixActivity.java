@@ -87,6 +87,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		case R.id.refresh:
 			Refresh();
 			break;
+		case R.id.reset:
+			Command.setText("");
 		}
 	}
 	
