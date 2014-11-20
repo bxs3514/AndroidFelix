@@ -32,7 +32,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class AFelixActivity extends ActionBarActivity implements OnClickListener{
@@ -128,8 +127,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 						BundleInfo.append(s);
 						   
 						//mAFelixService.uninstallBundle("Helloosgi_1.0.0.jar");
-						//Refresh();
-						//Toast.makeText(AFelixActivity.this, s, Toast.LENGTH_LONG).show();
 					}
 				}catch (RemoteException re){
 					

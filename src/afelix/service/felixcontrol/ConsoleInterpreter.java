@@ -31,11 +31,9 @@ public class ConsoleInterpreter{
 	}
 	
 	
-	
 	public String getDefaultPath() {
 		return defaultPath;
 	}
-
 
 
 	public void setDefaultPath(String defaultPath) {

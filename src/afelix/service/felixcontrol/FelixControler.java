@@ -102,7 +102,7 @@ public class FelixControler {
 			
 			for(int i = 0; i < bundle.length(); i++){
 				Log.d(TAG, String.valueOf(bundle.charAt(i)));
-				if(bundle.charAt(i) < '0' && bundle.charAt(i) > '9') break;
+				if(bundle.charAt(i) < '0' || bundle.charAt(i) > '9') break;
 				if(i == bundle.length() - 1){
 					bid = Long.parseLong(bundle);
 					if(bid == 0 && !su) return "Permission denied.";
