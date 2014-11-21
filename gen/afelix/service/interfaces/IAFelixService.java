@@ -106,9 +106,9 @@ return true;
 case TRANSACTION_getAll:
 {
 data.enforceInterface(DESCRIPTOR);
-java.lang.String _result = this.getAll();
+java.util.List<java.lang.String> _result = this.getAll();
 reply.writeNoException();
-reply.writeString(_result);
+reply.writeStringList(_result);
 return true;
 }
 case TRANSACTION_getBundleId:
@@ -279,16 +279,16 @@ _reply.recycle();
 _data.recycle();
 }
 }
-@Override public java.lang.String getAll() throws android.os.RemoteException
+@Override public java.util.List<java.lang.String> getAll() throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 android.os.Parcel _reply = android.os.Parcel.obtain();
-java.lang.String _result;
+java.util.List<java.lang.String> _result;
 try {
 _data.writeInterfaceToken(DESCRIPTOR);
 mRemote.transact(Stub.TRANSACTION_getAll, _data, _reply, 0);
 _reply.readException();
-_result = _reply.readString();
+_result = _reply.createStringArrayList();
 }
 finally {
 _reply.recycle();
@@ -394,7 +394,7 @@ public void installBundleByLocation(java.lang.String bundle, java.lang.String lo
 public void uninstallBundle(java.lang.String bundle_id) throws android.os.RemoteException;
 public void startBundle(java.lang.String bundle) throws android.os.RemoteException;
 public void stopBundle(java.lang.String bundle) throws android.os.RemoteException;
-public java.lang.String getAll() throws android.os.RemoteException;
+public java.util.List<java.lang.String> getAll() throws android.os.RemoteException;
 public int getBundleId(java.lang.String bundle) throws android.os.RemoteException;
 public afelix.service.interfaces.BundlePresent getBundlesContainer(java.lang.String bundle) throws android.os.RemoteException;
 public java.lang.String dependency(java.lang.String bundle) throws android.os.RemoteException;

@@ -54,14 +54,10 @@
             android:layout_height="wrap_content"
             android:text="Refresh" />
         
-        <TextView
-            android:id="@+id/bundleInfo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp" />
-
+        <include 
+            android:id="@+id/bundleList"
+            layout = "@layout/main_list_view" />
+		
     </LinearLayout>
-
+    
 </RelativeLayout>

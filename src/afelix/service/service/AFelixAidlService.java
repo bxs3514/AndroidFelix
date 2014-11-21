@@ -14,6 +14,7 @@ package afelix.service.service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleException;
@@ -151,17 +152,17 @@ public class AFelixAidlService extends Service{
 
 
 		@Override
-		public String getAll() throws RemoteException {
+		public List<String> getAll() throws RemoteException {
 			// TODO Auto-generated method stub
 
-			String res = new String();
+			//String res = new String();
 			ArrayList<String> as =  fc.BundleInfo(4);
-			Iterator<String> it = as.iterator();
+			//Iterator<String> it = as.iterator();
 			
-			while(it.hasNext()){
-				res += it.next() + "\n";
-			}
-			return res;
+			//while(it.hasNext()){
+				//res += it.next() + "\n";
+			//}
+			return as;
 		}
 		
 		

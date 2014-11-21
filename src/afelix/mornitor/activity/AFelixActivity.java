@@ -12,6 +12,9 @@
 
 package afelix.mornitor.activity;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import afelix.afelixservice.androidfelix.R;
 import afelix.service.interfaces.IAFelixService;
 import android.support.v7.app.ActionBarActivity;
@@ -29,8 +32,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,11 +48,20 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	private ServiceConnection mConnection = null;
 	private IAFelixService mAFelixService = null;
 	
-	private TextView BundleInfo = null;
+	private ListView BundleList = null;
 	private EditText Command = null;
 	private Button Confirm = null;
+	private Button Reset = null;
 	private Button Refresh = null;
 	private Intent intent = null;
+
+	private ArrayList<String> as = null;
+	//private Iterator<String> it = null;
+	private ArrayAdapter<String> mArrayAdapter = null;
+	private String[] bundles = null;
+	private Thread refreshThread = null;
+	
+	private RefreshList refresh = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +73,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		
 		intent = new Intent(IAFelixService.class.getName());
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		
 	}
 	
 	@Override
@@ -74,7 +91,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		case R.id.confirm:
 			try {
 				if(mAFelixService.interpret(Command.getText().toString())){
-					Refresh();
+					//Refresh();
+					refreshThread.run();
 					Command.setText("");
 				}
 				else 
@@ -85,10 +103,12 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			}
 			break;
 		case R.id.refresh:
-			Refresh();
+			//Refresh();
+			refreshThread.run();
 			break;
 		case R.id.reset:
 			Command.setText("");
+			break;
 		}
 	}
 	
@@ -121,12 +141,9 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				try{
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
-						//mAFelixService.installBundleByLocation("Helloosgi_1.0.0.jar", "/sdcard/bundle/");
 						
-						String s = mAFelixService.getAll();
-						BundleInfo.append(s);
-						   
-						//mAFelixService.uninstallBundle("Helloosgi_1.0.0.jar");
+						//Refresh();
+						refreshThread.run();
 					}
 				}catch (RemoteException re){
 					
@@ -145,8 +162,23 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	}
 	
 	private void initViews(){
-		BundleInfo =  (TextView)findViewById(R.id.bundleInfo);
-		BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n");
+		BundleList = (ListView)findViewById(R.id.bundleList);
+		
+		BundleList.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent,
+					View view, int position, long id) {
+				// TODO Auto-generated method stub
+				String bundle = (String)parent.getItemAtPosition(position);
+				Toast.makeText(AFelixActivity.this, (bundle.split("\\s+"))[1], Toast.LENGTH_SHORT).show();
+			}
+			
+		});
+		
+		refresh = new RefreshList();
+		refreshThread = new Thread(refresh);
+		
 		Command = (EditText)findViewById(R.id.command);
 		Command.setOnEditorActionListener(new TextView.OnEditorActionListener(){
 
@@ -157,7 +189,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 						|| (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())){
 					try {
 						if(mAFelixService.interpret(Command.getText().toString())){
-							Refresh();
+							//Refresh();
+							refreshThread.run();
 							Command.setText("");
 						}
 						else 
@@ -175,21 +208,50 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		
 		Confirm = (Button)findViewById(R.id.confirm);
 		Confirm.setOnClickListener(this);
+		
+		Reset = (Button)findViewById(R.id.reset);
+		Reset.setOnClickListener(this);
+		
 		Refresh = (Button)findViewById(R.id.refresh);
 		Refresh.setOnClickListener(this);
 	}
 	
-	private void Refresh(){
+	private class RefreshList implements Runnable{
+		
+		private void Refresh(){
+			try {
+				as = (ArrayList<String>)mAFelixService.getAll();
+				bundles = as.toArray(new String[as.size()]);
+				mArrayAdapter = new ArrayAdapter<String>(AFelixActivity.this, android.R.layout.simple_list_item_1, bundles);
+				BundleList.setAdapter(mArrayAdapter);
+				
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, "Service has unexpected disconnected.", e);
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			Refresh();
+		}
+	}
+	
+	/*private void Refresh(){
 		try {
-			String s = mAFelixService.getAll();
-			BundleInfo.setText("Id\t\t\t\t Name\t\t\t\t\t\t\t\t\t\t Status\t \n" + s);
+			as = (ArrayList<String>)mAFelixService.getAll();
+			bundles = as.toArray(new String[as.size()]);
+			mArrayAdapter = new ArrayAdapter<String>(AFelixActivity.this, android.R.layout.simple_list_item_1, bundles);
+			BundleList.setAdapter(mArrayAdapter);
 			
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			Log.e(TAG, "Service has unexpected disconnected.", e);
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 
 }

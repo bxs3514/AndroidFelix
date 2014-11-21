@@ -13,6 +13,8 @@ package afelix.service.felixcontrol;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import android.os.Environment;
 import android.util.Log;
 
 
@@ -27,7 +29,7 @@ public class ConsoleInterpreter{
 	
 	public ConsoleInterpreter(FelixControler fc) {
 		this.fc = fc;
-		defaultPath = "/sdcard/bundle/";
+		defaultPath = Environment.getExternalStorageDirectory().getPath() + "/bundle/";
 	}
 	
 	
