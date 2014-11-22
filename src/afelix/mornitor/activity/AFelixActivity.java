@@ -14,6 +14,7 @@ package afelix.mornitor.activity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import afelix.afelixservice.androidfelix.R;
 import afelix.service.interfaces.IAFelixService;
@@ -22,6 +23,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -72,6 +75,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		buildServiceConnection();
 		
 		intent = new Intent(IAFelixService.class.getName());
+		intent = this.createExplicitFromImplicitIntent(getApplicationContext(), intent);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		
 	}
@@ -161,6 +165,32 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		};
 	}
 	
+	//Change a implicit intent to a explicit one
+	private Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
+        // Retrieve all services that can match the given intent
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
+ 
+        // Make sure only one match was found
+        if (resolveInfo == null || resolveInfo.size() != 1) {
+            return null;
+        }
+ 
+        // Get component info and create ComponentName
+        ResolveInfo serviceInfo = resolveInfo.get(0);
+        String packageName = serviceInfo.serviceInfo.packageName;
+        String className = serviceInfo.serviceInfo.name;
+        ComponentName component = new ComponentName(packageName, className);
+ 
+        // Create a new intent. Use the old one for extras and such reuse
+        Intent explicitIntent = new Intent(implicitIntent);
+ 
+        // Set the component to be explicit
+        explicitIntent.setComponent(component);
+ 
+        return explicitIntent;
+    }
+	
 	private void initViews(){
 		BundleList = (ListView)findViewById(R.id.bundleList);
 		
@@ -216,6 +246,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		Refresh.setOnClickListener(this);
 	}
 	
+	
+	
 	private class RefreshList implements Runnable{
 		
 		private void Refresh(){
@@ -231,6 +263,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				e.printStackTrace();
 			}
 		}
+		
 
 		@Override
 		public void run() {
