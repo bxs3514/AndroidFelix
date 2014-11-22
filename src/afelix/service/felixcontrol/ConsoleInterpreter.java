@@ -11,6 +11,7 @@
 
 package afelix.service.felixcontrol;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -23,13 +24,19 @@ public class ConsoleInterpreter{
 	
 	private FelixControler fc = null;
 	
+	//private File[] f = null;
+	
 	private String command = null;
 	private String defaultPath = null;
 	private boolean res;
 	
 	public ConsoleInterpreter(FelixControler fc) {
 		this.fc = fc;
-		defaultPath = Environment.getExternalStorageDirectory().getPath() + "/bundle/";
+		
+		//f = Environment.getExternalStorageDirectory().listFiles();
+		defaultPath = Environment.getExternalStorageDirectory().getPath();
+		
+		//defaultPath = Environment.getExternalStorageDirectory().getPath() + "/bundle/";
 	}
 	
 	

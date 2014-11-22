@@ -13,7 +13,6 @@
 package afelix.mornitor.activity;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import afelix.afelixservice.androidfelix.R;
@@ -79,6 +78,26 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		
 	}
+	
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
+	}
+	
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		
+	}
+	
+	
+	@Override
+	protected void onStop(){
+		super.onStop();
+	}
+	
 	
 	@Override
 	protected void onDestroy(){
@@ -245,7 +264,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		Refresh = (Button)findViewById(R.id.refresh);
 		Refresh.setOnClickListener(this);
 	}
-	
 	
 	
 	private class RefreshList implements Runnable{
