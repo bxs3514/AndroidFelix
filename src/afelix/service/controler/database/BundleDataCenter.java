@@ -123,7 +123,7 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 			as.add("BundleName");
 			as.add("BundleLocation");
 			
-			hs.put("BundleId", "INTEGER");
+			hs.put("BundleId", "INTEGER NOT NULL UNIQUE");
 			hs.put("BundleName", "VARCHAR(255)");
 			hs.put("BundleLocation", "VARCHAR(255)");
 			
@@ -209,7 +209,7 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 		//info.setText(cursor.getString(0));
 	}
 	
-	
+	  
 	private void setTable(String table, ArrayList<String> column, 
 			HashMap<String, String> type, MODE mode) throws SQLiteException{
 		DATABASE_UPGRADE = "";
@@ -253,11 +253,12 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 				afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE,
 						column.toArray(new String[column.size()]));
 				//QueryTest();
-				Query(null, table, null);
 			}catch(SQLiteException se){
 				Log.e(TAG, "Can't find the table to insert.", se);
 				Toast.makeText(this, "Can't find the table to insert.", Toast.LENGTH_LONG).show();
 			}
+
+			Query(null, table, null);
 			break;
 		case DELETE:
 			break;
