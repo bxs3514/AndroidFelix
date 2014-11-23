@@ -24,12 +24,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+        <activity 
+            android:name="afelix.service.controler.database.BundleDataCenter">
+            
+        </activity>
         <service android:name="afelix.service.service.AFelixAidlService"
             	 android:process=".remote">
             <intent-filter>
                 <action android:name="afelix.service.interfaces.IAFelixService"/>
             </intent-filter>
         </service>
+        
     </application>
 </manifest>

@@ -1,4 +1,14 @@
-package afelix.service.felixcontrol;
+/**
+ * 
+ * @author bxs3514
+ *
+ * This is a android felix launcher.
+ *
+ * @lastEdit 11/23/2014
+ * 
+ */
+
+package afelix.service.controler.felixcontrol;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +22,7 @@ import org.osgi.framework.BundleException;
 import android.content.Context;
 import android.util.Log;
 
-public class FelixControler {
+public class FelixControler implements BundleControler{
 	final private static String TAG = "FelixControler";
 	
 	private Felix felixFramework = null;
@@ -26,35 +36,48 @@ public class FelixControler {
 		this.mInterpreter = new ConsoleInterpreter(this);
 	}
 	
+	@Override
 	public String install(Context context, String bundle, int command){
 		Log.d(TAG, "About to install bundle: " + bundle);
 		String res = this.MainControler(context, bundle, command);
 		return res;
 	}
 	
-	
+	@Override
 	public String install(String bundle, String location){
 		Log.d(TAG, "About to install bundle: " + bundle);
 		res = this.MainControler(bundle, location, 2);
 		return res;
 	}
 	
+	@Override
 	public String uninstall(String bundle){
 		Log.d(TAG, "About to uninstall bundle: " + bundle);
 		res = this.MainControler(bundle, "", 1);
 		return res;
 	}
 	
+	@Override
 	public String start(String bundle){
 		Log.d(TAG, "About to start bundle: " + bundle);
 		res = this.MainControler(bundle, "", 32);
 		return res;
 	}
  
+	@Override
 	public String stop(String bundle){
 		Log.d(TAG, "About to start bundle: " + bundle);
 		res = this.MainControler(bundle, "", 16);
 		return res;
+	}
+	
+
+	public String interpret(String command){
+		return mInterpreter.interpret(command);
+	}
+
+	public void setSu(boolean su) {
+		this.su = su;
 	}
 	
 	private String MainControler(String bundle, String location, int command){
@@ -200,7 +223,7 @@ public class FelixControler {
 		return "Success";
 	}
 	
-	
+	@Override
 	public ArrayList<String> BundleInfo(int command){
 		ArrayList<String> as = new ArrayList<String>();
 		
@@ -237,11 +260,4 @@ public class FelixControler {
 		return as;
 	}
 	
-	public String interpret(String command){
-		return mInterpreter.interpret(command);
-	}
-
-	public void setSu(boolean su) {
-		this.su = su;
-	}
 }

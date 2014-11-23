@@ -19,8 +19,8 @@ import java.util.List;
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleException;
 
-import afelix.service.felixcontrol.FelixControler;
-import afelix.service.felixcontrol.LaunchFelix;
+import afelix.service.controler.felixcontrol.FelixControler;
+import afelix.service.controler.felixcontrol.LaunchFelix;
 import afelix.service.interfaces.BundlePresent;
 import afelix.service.interfaces.IAFelixService;
 import android.app.Service;

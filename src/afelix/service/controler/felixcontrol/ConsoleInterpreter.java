@@ -9,7 +9,7 @@
  * 
  */
 
-package afelix.service.felixcontrol;
+package afelix.service.controler.felixcontrol;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ConsoleInterpreter{
 		//f = Environment.getExternalStorageDirectory().listFiles();
 		defaultPath = Environment.getExternalStorageDirectory().getPath();
 		
-		//defaultPath = Environment.getExternalStorageDirectory().getPath() + "/bundle/";
+		defaultPath = Environment.getExternalStorageDirectory().getPath() + "/AfelixData/bundle/";
 	}
 	
 	

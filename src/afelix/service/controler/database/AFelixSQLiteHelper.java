@@ -1,18 +1,21 @@
-package afelix.service.database;
+/**
+ * 
+ * @author bxs3514
+ *
+ * This is a android felix launcher.
+ *
+ * @lastEdit 11/23/2014
+ * 
+ */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+package afelix.service.controler.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-enum MODE{
-	ADD, DELETE, MODIFY
-};
 
 public class AFelixSQLiteHelper extends SQLiteOpenHelper{
 	
@@ -21,15 +24,16 @@ public class AFelixSQLiteHelper extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "AndroidFelix.db";
 	private static final int DATABASE_INITIAL_VERSION = 1;
 	
-	private ArrayList<String> TABLE_NAME = null;
-	private HashMap<String, String> TABLE_COLUMN = null;
-	private static final String TABLE_COLUMN_ID = "_id";
+	//private ArrayList<String> TABLE_NAME = null;
+	//private HashMap<String, String> TABLE_COLUMN = null;
+	//private static final String TABLE_COLUMN_ID = "_id";
 	
-	private String DATABASE_UPGRADE = "";
+	private String DATABASE_CREATE = "";
 	
 	public AFelixSQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_INITIAL_VERSION);
-		TABLE_NAME = new ArrayList<String>();
+		//this.DATABASE_CREATE = DATABASE_CREATE;
+		/*TABLE_NAME = new ArrayList<String>();
 		TABLE_COLUMN = new HashMap<String, String>();
 		
 		String singleTableName = null;
@@ -39,14 +43,19 @@ public class AFelixSQLiteHelper extends SQLiteOpenHelper{
 					+ singleTableName + "(" + TABLE_COLUMN_ID
 					+ " integer primary key autoincrement, " + TABLE_COLUMN.get(singleTableName)
 					+ " text not null" + "\n";
-		}
+		}*/
 		
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
-		db.execSQL(DATABASE_UPGRADE);
+		Log.d(TAG,"Database is about to create.");
+		//try{
+			//db.execSQL(DATABASE_CREATE);
+		//}catch(SQLiteException se){
+			//Log.e(TAG, "Database create fail: " + se.toString(), se);
+		//}
 	}
 
 	@Override
@@ -54,7 +63,7 @@ public class AFelixSQLiteHelper extends SQLiteOpenHelper{
 		// TODO Auto-generated method stub
 		Log.w(TAG, "Upgrading database from version" + oldVersion + " to " + newVersion);
 		
-		String singleTableName = null;
+		/*String singleTableName = null;
 		DATABASE_UPGRADE = "";
 		for(Iterator<String> i = TABLE_NAME.iterator(); i.hasNext();){
 			singleTableName = i.next();
@@ -67,54 +76,18 @@ public class AFelixSQLiteHelper extends SQLiteOpenHelper{
 					+ " integer primary key autoincrement, " + TABLE_COLUMN.get(singleTableName)
 					+ " text not null" + "\n";
 		}
-		onCreate(db);
+		onCreate(db);*/
 	}
 
 	
 	
-	public ArrayList<String> getTABLE_NAME() {
+	/*public ArrayList<String> getTABLE_NAME() {
 		return TABLE_NAME;
 	}
 
 	public HashMap<String, String> getTABLE_COLUMN() {
 		return TABLE_COLUMN;
-	}
+	}*/
 
-	public void setTable(String table, String column, MODE mode){
-		DATABASE_UPGRADE = "";
-		switch(mode){
-		case ADD:
-			TABLE_NAME.add(table);
-			TABLE_COLUMN.put(table, column);
-			DATABASE_UPGRADE += "create table" 
-					+ table + "(" + TABLE_COLUMN_ID
-					+ " integer primary key autoincrement, " + column
-					+ " text not null" + "\n";
-			
-			//db.execSQL(DATABASE_UPGRADE);
-			break;
-		case DELETE:
-			if(!TABLE_NAME.isEmpty()){
-				TABLE_NAME.remove(table);
-				TABLE_COLUMN.remove(table);
-				DATABASE_UPGRADE = "DROP TABLE IF EXISTS" + table + "\n";
-				
-				//db.execSQL(DATABASE_UPGRADE);
-			}else{
-				Log.e(TAG, "Not have any table now.");
-			}
-			break;
-		case MODIFY:
-			if(TABLE_COLUMN.containsKey(table)){
-				TABLE_COLUMN.put(table, column);
-			}else{
-				Log.e(TAG, "Not have any table now.");
-			}
-			break;
-		default:
-			break;
-		}
-	}
-	
 	
 }

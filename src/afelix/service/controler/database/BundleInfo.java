@@ -1,4 +1,14 @@
-package afelix.mornitor.activity;
+/**
+ * 
+ * @author bxs3514
+ *
+ * This is a android felix launcher.
+ *
+ * @lastEdit 11/23/2014
+ * 
+ */
+
+package afelix.service.controler.database;
 
 import java.util.ArrayList;
 

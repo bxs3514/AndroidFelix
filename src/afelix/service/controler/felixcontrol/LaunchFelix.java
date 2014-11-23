@@ -9,7 +9,7 @@
  * 
  */
 
-package afelix.service.felixcontrol;
+package afelix.service.controler.felixcontrol;
 
 import java.io.File;
 import java.io.IOException;

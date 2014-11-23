@@ -9,13 +9,13 @@
  * 
  */
 
-
 package afelix.mornitor.activity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import afelix.afelixservice.androidfelix.R;
+import afelix.service.controler.database.BundleDataCenter;
 import afelix.service.interfaces.IAFelixService;
 import android.support.v7.app.ActionBarActivity;
 import android.content.ComponentName;
@@ -52,10 +52,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private ListView BundleList = null;
 	private EditText Command = null;
-	private Button Confirm = null;
-	private Button Reset = null;
-	private Button Refresh = null;
-	private Intent intent = null;
+	private Button ConfirmBtn = null;
+	private Button ResetBtn = null;
+	private Button RefreshBtn = null;
+	private Button ShowAllBundleBtn = null;
+	private Intent bindServiceIntent = null;
+	private Intent showBundleIntent = null;
+	private BundleDataCenter dbCenter = null; 
 
 	private ArrayList<String> as = null;
 	//private Iterator<String> it = null;
@@ -69,13 +72,15 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_afelix);
+		dbCenter = new BundleDataCenter();
 		
 		initViews();
 		buildServiceConnection();
 		
-		intent = new Intent(IAFelixService.class.getName());
-		intent = this.createExplicitFromImplicitIntent(getApplicationContext(), intent);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		bindServiceIntent = new Intent(IAFelixService.class.getName());
+		bindServiceIntent = this.createExplicitFromImplicitIntent(
+				getApplicationContext(), bindServiceIntent);
+		bindService(bindServiceIntent, mConnection, Context.BIND_AUTO_CREATE);
 		
 	}
 	
@@ -119,7 +124,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					Command.setText("");
 				}
 				else 
-					Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(AFelixActivity.this, "Your command is wrong!",
+							Toast.LENGTH_SHORT).show();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -131,6 +137,10 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			break;
 		case R.id.reset:
 			Command.setText("");
+			break;
+		case R.id.showAllBundleList:
+			showBundleIntent = new Intent(AFelixActivity.this, BundleDataCenter.class);
+			this.startActivity(showBundleIntent);
 			break;
 		}
 	}
@@ -220,7 +230,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					View view, int position, long id) {
 				// TODO Auto-generated method stub
 				String bundle = (String)parent.getItemAtPosition(position);
-				Toast.makeText(AFelixActivity.this, (bundle.split("\\s+"))[1], Toast.LENGTH_SHORT).show();
+				Toast.makeText(AFelixActivity.this, 
+						"The bundle is: " + (bundle.split("\\s+"))[1], Toast.LENGTH_SHORT).show();
 			}
 			
 		});
@@ -255,14 +266,17 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			
 		});
 		
-		Confirm = (Button)findViewById(R.id.confirm);
-		Confirm.setOnClickListener(this);
+		ConfirmBtn = (Button)findViewById(R.id.confirm);
+		ConfirmBtn.setOnClickListener(this);
 		
-		Reset = (Button)findViewById(R.id.reset);
-		Reset.setOnClickListener(this);
+		ResetBtn = (Button)findViewById(R.id.reset);
+		ResetBtn.setOnClickListener(this);
 		
-		Refresh = (Button)findViewById(R.id.refresh);
-		Refresh.setOnClickListener(this);
+		RefreshBtn = (Button)findViewById(R.id.refresh);
+		RefreshBtn.setOnClickListener(this);
+		
+		ShowAllBundleBtn = (Button)findViewById(R.id.showAllBundleList);
+		ShowAllBundleBtn.setOnClickListener(this);
 	}
 	
 	
@@ -272,7 +286,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			try {
 				as = (ArrayList<String>)mAFelixService.getAll();
 				bundles = as.toArray(new String[as.size()]);
-				mArrayAdapter = new ArrayAdapter<String>(AFelixActivity.this, android.R.layout.simple_list_item_1, bundles);
+				mArrayAdapter = new ArrayAdapter<String>(AFelixActivity.this, 
+						android.R.layout.simple_list_item_1, bundles);
 				BundleList.setAdapter(mArrayAdapter);
 				
 			} catch (RemoteException e) {
