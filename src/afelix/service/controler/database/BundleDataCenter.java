@@ -10,7 +10,6 @@
 
 package afelix.service.controler.database;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,16 +33,16 @@ enum MODE{
 	ADD, DROP, DELETE, INSERT
 };
 
-public class BundleDataCenter extends Activity implements DatabaseControler, OnClickListener{
+public class BundleDataCenter extends Activity implements IDatabaseControler, OnClickListener{
 	private static final String TAG = "DataControler";
 	
 	private static final String TABLE_COLUMN_ID = "_id";
 	private String DATABASE_UPGRADE = "";
 	private String DATABASE_QUERY = "";
-	private File[] bundleFiles = null;
-	private ArrayList<String> as = null;
-	private HashMap<String, String> hs = null;
+	private ArrayList<HashMap<String, String>> allBundles = null;
+	private HashMap<String, String> everyBundle = null;
 	
+	private ArrayAdapter<String> mArrayAdapter = null;
 	private ListView allBundlesList = null;
 	private TextView info;
 	private AFelixSQLiteHelper afHelper = null;
@@ -54,10 +53,16 @@ public class BundleDataCenter extends Activity implements DatabaseControler, OnC
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.all_bundle_list);
+		
+		allBundles = new ArrayList<HashMap<String, String>>();
+		everyBundle = new HashMap<String, String>();
+		
 	    afHelper = new AFelixSQLiteHelper(getApplicationContext());
 	    info = (TextView)findViewById(R.id.textView2);
-	    initDatabase();
+
 	    allBundlesList = (ListView)findViewById(R.id.all_bundle_list);
+	    
+	    initDatabase();
 	}
 
 	@Override
@@ -109,13 +114,11 @@ public class BundleDataCenter extends Activity implements DatabaseControler, OnC
 		HashMap<String, String> hs = new HashMap<String, String>();
 		
 		try{
-			as.add("1");
+			/*as.add("1");
 			as.add("EnglishDictionary.jar");
 			as.add(Environment.getExternalStorageDirectory().getPath() + "/Afelixdata/Bundle/");
 			setTable("BundleLocationTable", as, null, MODE.INSERT);
-			as.clear();
-		}catch(SQLiteException se){
-			Log.e(TAG, "The table isn't existing, about to create a new one.", se);
+			as.clear();*/
 			as.add("BundleId");
 			as.add("BundleName");
 			as.add("BundleLocation");
@@ -133,43 +136,70 @@ public class BundleDataCenter extends Activity implements DatabaseControler, OnC
 			as.add(Environment.getExternalStorageDirectory().getPath() + "/Afelixdata/Bundle/");
 			setTable("BundleLocationTable", as, null, MODE.INSERT);
 			as.clear();
+		}catch(SQLiteException se){
+			//Toast.makeText(this, "The table isn't existing, create a new one.", Toast.LENGTH_LONG).show();
+			Log.e(TAG, "The table is existing.", se);
+		 
+			as.add("1");
+			as.add("EnglishDictionary.jar");
+			as.add(Environment.getExternalStorageDirectory().getPath() + "/Afelixdata/Bundle/");
+			setTable("BundleLocationTable", as, null, MODE.INSERT);
+			as.clear();
 		}
 	}
 	
-	
-	public ArrayAdapter<String> Query(String select, String table, String where){
+	public ArrayAdapter<String> Query(String[] select, String table, String where){
+
 		if(select != null){
-			if(where != null)
-				DATABASE_QUERY = "select " + select + " from " + table + " where " + where;
+			String wholeSelect = "";
+			for(String s : select){
+				wholeSelect += s;
+			}
+			
+			if(where == null)
+				DATABASE_QUERY = "select " + wholeSelect + " from " + table + " where " + where;
 			else
-				DATABASE_QUERY = "select " + select + " from " + table;
+				DATABASE_QUERY = "select " + wholeSelect + " from " + table;
 				
-		}else{
+		}
+		else{
 			if(where != null)
 				DATABASE_QUERY = "select * from " + table + " where " + where;
 			else
 				DATABASE_QUERY = "select * from " + table;
 		}
 		
+		//Toast.makeText(this, this.DATABASE_QUERY, Toast.LENGTH_LONG).show();
 		Cursor cursor = afHelper.getReadableDatabase().rawQuery(DATABASE_QUERY, null);
+		ArrayList<String> tempBundleList = new ArrayList<String>();
 		
-		if(!cursor.equals(null)){
-			//info.setText(cursor.getColumnCount());
-			//info.setText("");
-			//info.append(cursor.getString(0));
-			ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(this, 
-					android.R.layout.simple_list_item_1,
-					new String[]{cursor.getString(0), cursor.getString(1), cursor.getString(2)}
-					);
-			allBundlesList.setAdapter(mArrayAdapter);/**/
-			//return mArrayAdapter;
-		}else Toast.makeText(this, "Can't find the data!", Toast.LENGTH_LONG).show();
-		return null;
+		while(cursor.moveToNext()){
+			if(select == null){
+				everyBundle.put("id", cursor.getString(0));
+				everyBundle.put("BundleId", cursor.getString(1));
+				everyBundle.put("BundleName", cursor.getString(2));
+				everyBundle.put("BundleLocation", cursor.getString(3));
+				
+				tempBundleList.add(everyBundle.get("id") + "\t\t\t\t\t"
+						+ everyBundle.get("BundleId") + "\t\t\t\t\t"
+						+ everyBundle.get("BundleName") + "\t\t\t\t\t"
+						+ everyBundle.get("BundleLocation" + "\t\t\t\t\t"));
+			}else{
+				
+			}
+			allBundles.add(everyBundle);
+		}
+		
+		mArrayAdapter = new ArrayAdapter<String>(this, 
+				android.R.layout.simple_list_item_1, 
+				tempBundleList.toArray(new String[tempBundleList.size()]));
+		allBundlesList.setAdapter(mArrayAdapter);
+		return mArrayAdapter;
 	}
 	
 	public void QueryTest(){
 		Cursor cursor = afHelper.getReadableDatabase()
-				.rawQuery("select BundleLocation from BundleLocationTable", null);
+				.rawQuery("select * from BundleLocationTable", null);
 		if (cursor.moveToFirst() == false){
 			Toast.makeText(this, "Empty!", Toast.LENGTH_LONG).show();
 		}else{
@@ -213,7 +243,7 @@ public class BundleDataCenter extends Activity implements DatabaseControler, OnC
 			}
 			break;
 		case DROP:
-				DATABASE_UPGRADE = "DROP TABLE IF EXISTS" + table;
+				DATABASE_UPGRADE = "DROP TABLE IF EXISTS " + table;
 				afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE);
 				//db.execSQL(DATABASE_UPGRADE);
 			break;
@@ -222,18 +252,17 @@ public class BundleDataCenter extends Activity implements DatabaseControler, OnC
 			try{
 				afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE,
 						column.toArray(new String[column.size()]));
-				QueryTest();
+				//QueryTest();
+				Query(null, table, null);
 			}catch(SQLiteException se){
 				Log.e(TAG, "Can't find the table to insert.", se);
-				//Toast.makeText(this, "Can't insert!!!", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "Can't find the table to insert.", Toast.LENGTH_LONG).show();
 			}
-			//Query(null, table, null);
 			break;
 		case DELETE:
 			break;
 		default:
 			break;
-			
 		}
 	}
 }

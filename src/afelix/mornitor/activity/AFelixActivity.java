@@ -11,6 +11,7 @@
 
 package afelix.mornitor.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,12 +77,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		
 		initViews();
 		buildServiceConnection();
-		
+
 		bindServiceIntent = new Intent(IAFelixService.class.getName());
+		
 		bindServiceIntent = this.createExplicitFromImplicitIntent(
 				getApplicationContext(), bindServiceIntent);
+
 		bindService(bindServiceIntent, mConnection, Context.BIND_AUTO_CREATE);
-		
 	}
 	
 	
