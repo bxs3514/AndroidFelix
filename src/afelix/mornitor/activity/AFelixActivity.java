@@ -181,7 +181,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 						refreshThread.run();
 					}
 				}catch (RemoteException re){
-					
 					re.printStackTrace();
 				}
 			}

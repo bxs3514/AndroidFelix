@@ -11,10 +11,10 @@
 
 package afelix.service.controler.felixcontrol;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import afelix.service.controler.file.FileControler;
 import android.os.Environment;
 import android.util.Log;
 
@@ -23,20 +23,21 @@ public class ConsoleInterpreter{
 	private final static String TAG = "ConsoleInterpreter";
 	
 	private FelixControler fc = null;
-	
+	private FileControler filecontrol = null;
 	//private File[] f = null;
 	
 	private String command = null;
 	private String defaultPath = null;
-	private boolean res;
+	private String res;
 	
 	public ConsoleInterpreter(FelixControler fc) {
 		this.fc = fc;
-		
-		//f = Environment.getExternalStorageDirectory().listFiles();
+		filecontrol = new FileControler();
+		filecontrol.initAFelixFile();
+
 		defaultPath = Environment.getExternalStorageDirectory().getPath();
 		
-		defaultPath = Environment.getExternalStorageDirectory().getPath() + "/AfelixData/bundle/";
+		defaultPath = Environment.getExternalStorageDirectory().getPath() + "/AFelixData/Bundle/";
 	}
 	
 	
@@ -50,12 +51,11 @@ public class ConsoleInterpreter{
 	}
 
 
-
 	public String interpret(String command){
 		this.command = command.toLowerCase();
 		String[] cwords = command.split("\\s+");
 		if(cwords[0].equals("ss")){
-			String res = new String();
+			res = new String();
 			ArrayList<String> as =  fc.BundleInfo(4);
 			Iterator<String> it = as.iterator();
 			
