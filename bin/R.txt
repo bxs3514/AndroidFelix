@@ -253,6 +253,7 @@ int id always 0x7f05000b
 int id beginning 0x7f050011
 int id bundleList 0x7f050041
 int id bundle_list_title 0x7f050043
+int id bundle_select_number 0x7f050046
 int id checkbox 0x7f05002d
 int id collapseActionView 0x7f05000d
 int id command 0x7f05003c
@@ -302,7 +303,6 @@ int id showTitle 0x7f050006
 int id split_action_bar 0x7f05001e
 int id submit_area 0x7f050039
 int id tabMode 0x7f050002
-int id textView2 0x7f050046
 int id title 0x7f05002b
 int id top_action_bar 0x7f050020
 int id up 0x7f050021

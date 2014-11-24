@@ -5,13 +5,12 @@
  *
  * This is a monitor to show the bundle states to users.
  *
- * @lastEdit 11/18/2014
+ * @lastEdit 11/24/2014
  * 
  */
 
 package afelix.mornitor.activity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
