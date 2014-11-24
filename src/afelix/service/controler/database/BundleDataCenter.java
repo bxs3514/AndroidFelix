@@ -14,9 +14,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import afelix.afelixservice.androidfelix.R;
-import afelix.mornitor.activity.AFelixActivity;
+import afelix.monitor.activity.AFelixActivity;
 import afelix.service.controler.file.FileControler;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -68,6 +70,8 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 	private Button installBundleBtn = null;
 	private Button fileSystemBtn = null;
 	
+	ArrayList<String> list = new ArrayList<String>();//Change later!
+	
 	public BundleDataCenter(){
 
 		bundleLocation = new ArrayList<String>();
@@ -107,12 +111,14 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 		case R.id.install:
 			installAndroidBundle = new Bundle();
 			installIntent = new Intent(this, AFelixActivity.class);
+			//Toast.makeText(this, "Start install", Toast.LENGTH_LONG).show();
 			
-			Toast.makeText(this, "Start install", Toast.LENGTH_LONG).show();
 			allBundles.add(selectedBundles);
-			installAndroidBundle.putParcelableArrayList("installBundles", allBundles);
+			installAndroidBundle.putParcelableArrayList("installBundle", allBundles);
 			installIntent.putExtras(installAndroidBundle);
-			startActivity(installIntent);
+			//startActivity(installIntent);
+			BundleDataCenter.this.setResult(RESULT_OK, installIntent);
+			BundleDataCenter.this.finish();
 			break;
 		case R.id.file_system:
 			break;
@@ -161,13 +167,14 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 
 				String bundle = (String)parent.getItemAtPosition(position);
 				if(selectedBundles.get(position) == null || selectedBundles.get(position).equals("")){
-					Toast.makeText(BundleDataCenter.this, 
-							"The bundle: " + (bundle.split("\\s+"))[1] + " is selected.", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(BundleDataCenter.this, 
+							//"The bundle: " + bundle + " is selected.", Toast.LENGTH_SHORT).show();
+					
 					selectedBundles.put(position, bundle);
 					SelectNumber++;
 				}else{
-					Toast.makeText(BundleDataCenter.this, 
-							"The bundle: " + (bundle.split("\\s+"))[1] + " is deselected.", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(BundleDataCenter.this, 
+							//"The bundle: " + (bundle.split("\\s+"))[1] + " is deselected.", Toast.LENGTH_SHORT).show();
 					selectedBundles.put(position, "");
 					SelectNumber--;
 				}
@@ -177,7 +184,9 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 		});
 		
 		installBundleBtn = (Button)findViewById(R.id.install);
+		installBundleBtn.setOnClickListener(this);
 		fileSystemBtn = (Button)findViewById(R.id.file_system);
+		fileSystemBtn.setOnClickListener(this);
 	}
 	
 	private void initData(){
@@ -212,9 +221,6 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 			//as.add("1");
 			
 			if(bundleLocation.size() == 1){
-				/*as.add("EnglishDictionary.jar");
-				as.add(Environment.getExternalStorageDirectory().getPath() + "/Afelixdata/Bundle/");
-				Insert("BundleLocationTable", as);*/
 				tempBundleLocation = mFileControler.getLocation();
 				bundleFiles = mFileControler.getFileList(tempBundleLocation, null);
 				//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();
@@ -258,8 +264,9 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 		}
 	}
 	
-	public ArrayAdapter<String> Query(String[] select, String table, String where){
-
+	public ArrayList<String> Query(String[] select, String table, String where){
+		ArrayList<String> as = new ArrayList<String>();
+		
 		if(select != null){
 			String wholeSelect = "";
 			for(String s : select){
@@ -294,6 +301,10 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 						+ everyBundle.get("BundleName"));
 			}else{
 				//Functions when select some elements
+				if(select.equals("BundleLocation")){
+					as.add(cursor.getString(0));
+					
+				}
 			}
 			//allBundles.add(everyBundle);
 		}
@@ -303,7 +314,7 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 				tempBundleList.toArray(new String[tempBundleList.size()]));
 		allBundlesList.setAdapter(mArrayAdapter);
 		allBundlesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		return mArrayAdapter;
+		return as;
 	}
 	
 	  

@@ -9,17 +9,22 @@
  * 
  */
 
-package afelix.mornitor.activity;
+package afelix.monitor.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import afelix.afelixservice.androidfelix.R;
 import afelix.service.controler.database.BundleDataCenter;
 import afelix.service.interfaces.IAFelixService;
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -58,21 +63,26 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	private Button ShowAllBundleBtn = null;
 	private Intent bindServiceIntent = null;
 	private Intent showBundleIntent = null;
-	private BundleDataCenter dbCenter = null; 
+	private Bundle getInstallBundle = null;
 
-	private ArrayList<String> as = null;
+	private ArrayList installList = null;
+	private ArrayList<String> bundleInstallList = new ArrayList<String>();
+	private HashMap<Integer, String> installBundleMap = null;
 	//private Iterator<String> it = null;
+	private ArrayList<String> as = null;
 	private ArrayAdapter<String> mArrayAdapter = null;
 	private String[] bundles = null;
+	private String[] operations = null;
 	private Thread refreshThread = null;
 	
 	private RefreshList refresh = null;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_afelix);
-		dbCenter = new BundleDataCenter();
+		//dbCenter = new BundleDataCenter();
 		
 		initViews();
 		buildServiceConnection();
@@ -83,12 +93,14 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				getApplicationContext(), bindServiceIntent);
 
 		bindService(bindServiceIntent, mConnection, Context.BIND_AUTO_CREATE);
+		//Toast.makeText(this, "OnCreate", Toast.LENGTH_LONG).show();
 	}
 	
 	
 	@Override
 	protected void onStart(){
 		super.onStart();
+		
 	}
 	
 	
@@ -111,6 +123,39 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		
 		if(mConnection != null)
 			unbindService(mConnection);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		//Toast.makeText(this, requestCode + " " + resultCode + " ", Toast.LENGTH_LONG).show();
+		switch (resultCode){
+		case RESULT_OK:
+			//Toast.makeText(this, "get", Toast.LENGTH_LONG).show();
+			if(data.getExtras() != null){
+				Bundle b = data.getExtras();
+				
+				getInstallBundle = data.getExtras();
+				installList = getInstallBundle.getParcelableArrayList("installBundle");
+				installBundleMap = (HashMap<Integer, String>) installList.get(0);
+				//Toast.makeText(this, "" + installBundleMap.size(), Toast.LENGTH_LONG).show();
+				for(Iterator i = installBundleMap.entrySet().iterator(); i.hasNext();){
+					Map.Entry temp = (Map.Entry)i.next();
+					//Toast.makeText(this, (String)temp.getValue(), Toast.LENGTH_LONG).show();
+					bundleInstallList.add((String)temp.getValue());
+					try {
+						mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						Toast.makeText(this, "Command Wrong", Toast.LENGTH_LONG).show();
+						e.printStackTrace();
+					}
+				}
+				refresh.run();
+			}
+			break;
+		default:
+			break;
+		}
 	}
 	
 	@Override
@@ -141,7 +186,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			break;
 		case R.id.showAllBundleList:
 			showBundleIntent = new Intent(AFelixActivity.this, BundleDataCenter.class);
-			this.startActivity(showBundleIntent);
+			this.startActivityForResult(showBundleIntent, 1);
 			break;
 		}
 	}
@@ -221,6 +266,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
     }
 	
 	private void initViews(){
+		operations = new String[]{"Start", "Stop", "Uninstall"};
 		BundleList = (ListView)findViewById(R.id.bundleList);
 		
 		BundleList.setOnItemClickListener(new OnItemClickListener(){
@@ -229,11 +275,54 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			public void onItemClick(AdapterView<?> parent,
 					View view, int position, long id) {
 				// TODO Auto-generated method stub
-				String bundle = (String)parent.getItemAtPosition(position);
-				Toast.makeText(AFelixActivity.this, 
-						"The bundle is: " + (bundle.split("\\s+"))[1], Toast.LENGTH_SHORT).show();
+				//final int finalPositon = position;
+				final String bundle = (String)parent.getItemAtPosition(position);
+				final String bundleId = (bundle.split("\\s+"))[0];
+				//final String bundleName = (bundle.split("\\s+"))[1];
+				
+				//Toast.makeText(AFelixActivity.this, 
+						//"The bundle is: " + bundleName, Toast.LENGTH_SHORT).show();
+				
+				new AlertDialog.Builder(AFelixActivity.this)
+				.setTitle("Choose your operation to the bundle")
+				.setItems(operations, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						switch(which){
+						case 0:
+							try {
+								mAFelixService.interpret("start " + bundleId);
+								refresh.run();
+							} catch (RemoteException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						case 1:
+							try {
+								mAFelixService.interpret("stop " + bundleId);
+								refresh.run();
+							} catch (RemoteException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						case 2:
+							try {
+								mAFelixService.interpret("uninstall " + bundleId);
+								refresh.run();
+							} catch (RemoteException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+					}
+				}).show();
+				
 			}
-			
 		});
 		
 		refresh = new RefreshList();

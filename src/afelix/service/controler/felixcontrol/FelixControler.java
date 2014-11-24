@@ -116,7 +116,7 @@ public class FelixControler implements BundleControler{
 				return "Fail to close the file.";
 			}
 				
-			return "Bundle:" + bundle + "has installed successfully";
+			return "Bundle:" + bundle + " has installed successfully";
 		case 1://uninstall a bundle
 		case 16://stop a bundle
 		case 32://start a bundle
@@ -160,7 +160,7 @@ public class FelixControler implements BundleControler{
 		        } catch (BundleException be) {
 		        	Log.e(TAG, be.toString(), be);
 		        }
-	        	return "Bundle:" + bundle + "has installed successfully";
+	        	return "Bundle: " + bundle + " has installed successfully";
 	        case 16:
 	        	try {
 		            b.stop(org.osgi.framework.Bundle.RESOLVED);
@@ -170,7 +170,7 @@ public class FelixControler implements BundleControler{
 		        } catch (BundleException be) {
 		        	Log.e(TAG, be.toString(), be);
 		        }
-	        	return "Bundle:" + bundle + "has stoped successfully";
+	        	return "Bundle: " + bundle + " has stoped successfully";
 	        case 32:
 	        	try {
 	        		
@@ -181,7 +181,7 @@ public class FelixControler implements BundleControler{
 		        } catch (BundleException be) {
 		        	System.out.println(be.toString());
 		        }
-				return "Bundle:" + bundle + "has started successfully";
+				return "Bundle: " + bundle + " has started successfully";
 	        }
 		default:
 			return "Invalid command.";   

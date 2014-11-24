@@ -29,7 +29,6 @@ public class FileControler implements IFileControler{
 			Log.e(TAG, "Can't find the external storate.");
 		}
 	}
-	
 
 	
 	public FileControler(String location){
