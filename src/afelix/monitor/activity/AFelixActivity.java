@@ -57,6 +57,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private ListView BundleList = null;
 	private EditText Command = null;
+	private TextView SystemInfo = null;
 	private Button ConfirmBtn = null;
 	private Button ResetBtn = null;
 	private Button RefreshBtn = null;
@@ -143,10 +144,11 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					//Toast.makeText(this, (String)temp.getValue(), Toast.LENGTH_LONG).show();
 					bundleInstallList.add((String)temp.getValue());
 					try {
-						mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
+						if((String)temp.getValue() != null && !((String)temp.getValue()).equals(""))
+							mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
-						Toast.makeText(this, "Command Wrong", Toast.LENGTH_LONG).show();
+						//Toast.makeText(this, "Command Wrong", Toast.LENGTH_LONG).show();
 						e.printStackTrace();
 					}
 				}
@@ -169,9 +171,9 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					refreshThread.run();
 					Command.setText("");
 				}
-				else 
-					Toast.makeText(AFelixActivity.this, "Your command is wrong!",
-							Toast.LENGTH_SHORT).show();
+				//else 
+					//Toast.makeText(AFelixActivity.this, "Your command is wrong!",
+							//Toast.LENGTH_SHORT).show();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -342,8 +344,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 							refreshThread.run();
 							Command.setText("");
 						}
-						else 
-							Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
+						//else 
+							//Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -14,14 +14,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import afelix.afelixservice.androidfelix.R;
 import afelix.monitor.activity.AFelixActivity;
 import afelix.service.controler.file.FileControler;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -55,6 +51,7 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 	private HashMap<String, String> everyBundle = null;
 	private HashMap<Integer, String> selectedBundles = null;
 	private int SelectNumber;
+	private int TotalNumber;
 	
 	private ArrayAdapter<String> mArrayAdapter = null;
 	private ListView allBundlesList = null;
@@ -68,7 +65,9 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 	private Bundle installAndroidBundle;
 	private Intent installIntent;
 	private Button installBundleBtn = null;
-	private Button fileSystemBtn = null;
+	//private Button fileSystemBtn = null;
+	//private Button SelectAllBtn = null;
+	//private Button DeselectBtn = null;
 	
 	ArrayList<String> list = new ArrayList<String>();//Change later!
 	
@@ -79,6 +78,7 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 		everyBundle = new HashMap<String, String>();
 		selectedBundles = new HashMap<Integer, String>();
 		SelectNumber = 0;
+		TotalNumber = 0;
 		
 		bundleLocation.add(Environment.getExternalStorageDirectory().getPath() 
 				+ "/Afelixdata/Bundle/");
@@ -120,8 +120,14 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 			BundleDataCenter.this.setResult(RESULT_OK, installIntent);
 			BundleDataCenter.this.finish();
 			break;
-		case R.id.file_system:
-			break;
+		//case R.id.select_all:
+			//for(Iterator i = selectedBundles.entrySet().iterator(); i.hasNext(); ){
+				//mArrayAdapter.ge
+			//}
+			//Refresh();
+			//break;
+		//case R.id.deselect:
+			//break;
 		default:
 			break;
 		}
@@ -179,14 +185,15 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 					SelectNumber--;
 				}
 				info.setText("Selected number: " + SelectNumber);
+						//+ "\nTotal bundles: " + selectedBundles.size());
 			}
 			
 		});
 		
 		installBundleBtn = (Button)findViewById(R.id.install);
 		installBundleBtn.setOnClickListener(this);
-		fileSystemBtn = (Button)findViewById(R.id.file_system);
-		fileSystemBtn.setOnClickListener(this);
+		//fileSystemBtn = (Button)findViewById(R.id.select_all);
+		//fileSystemBtn.setOnClickListener(this);
 	}
 	
 	private void initData(){
@@ -297,8 +304,10 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 				everyBundle.put("BundleName", cursor.getString(1));
 				everyBundle.put("BundleLocation", cursor.getString(2));
 				
-				tempBundleList.add(everyBundle.get("id") + "\t\t\t\t\t\t\t\t"
-						+ everyBundle.get("BundleName"));
+				tempBundleList.add(everyBundle.get("id") + 
+						"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + everyBundle.get("BundleName"));
+				
+				TotalNumber++;
 			}else{
 				//Functions when select some elements
 				if(select.equals("BundleLocation")){
@@ -375,8 +384,14 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 		}
 	}
 	
-
-	/*public void QueryTest(){
+	/*public void Refresh(){
+		
+		mArrayAdapter.notifyDataSetChanged();
+		
+		info.setText("Selected number: " + SelectNumber);
+	}
+	
+	public void QueryTest(){
 		Cursor cursor = afHelper.getReadableDatabase()
 				.rawQuery("select * from BundleLocationTable", null);
 		if (cursor.moveToFirst() == false){

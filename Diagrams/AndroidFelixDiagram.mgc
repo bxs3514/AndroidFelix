@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="afelix.service.controler.felixcontrol.BundleControler"
+        x="276" y="502">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="afelix.monitor.activity.AFelixActivity" x="546" y="146">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="afelix.monitor.activity.AFelixActivity.RefreshList"
+            endpointName="refresh" kind="Simple"/>
+        <Communication destinationClassName="afelix.monitor.activity.AFelixActivity.RefreshList"/>
+    </Class>
+    <Class name="afelix.service.controler.database.BundleDataCenter"
+        x="1076" y="239">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="afelix.service.controler.file.FileControler"
+            endpointName="mFileControler" kind="Simple"/>
+        <Association
+            destinationClassName="afelix.service.controler.database.AFelixSQLiteHelper"
+            endpointName="afHelper" kind="Simple"/>
+        <Communication destinationClassName="afelix.service.controler.file.FileControler"/>
+    </Class>
+    <Class name="afelix.service.service.AFelixAidlService" x="540" y="744">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="afelix.service.controler.felixcontrol.LaunchFelix"
+            endpointName="launchFelix" kind="Simple"/>
+        <Association
+            destinationClassName="afelix.service.controler.felixcontrol.FelixControler"
+            endpointName="fc" kind="Simple"/>
+        <Communication destinationClassName="afelix.service.controler.felixcontrol.FelixControler"/>
+        <Communication destinationClassName="afelix.service.controler.felixcontrol.LaunchFelix"/>
+    </Class>
+    <Class name="afelix.service.controler.file.IFileControler" x="835" y="358">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="afelix.service.controler.database.MODE" x="985" y="238">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="afelix.service.controler.felixcontrol.FelixControler"
+        x="275" y="736">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="afelix.service.controler.felixcontrol.BundleControler"/>
+        <Association
+            destinationClassName="afelix.service.controler.felixcontrol.ConsoleInterpreter"
+            endpointName="mInterpreter" kind="Simple"/>
+        <Communication destinationClassName="afelix.service.controler.felixcontrol.ConsoleInterpreter"/>
+    </Class>
+    <Class name="afelix.service.interfaces.BundlePresent" x="798" y="903">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="afelix.service.controler.database.AFelixSQLiteHelper"
+        x="1002" y="129">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="afelix.service.controler.felixcontrol.LaunchFelix"
+        x="520" y="958">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="afelix.service.controler.file.FileControler" x="799" y="740">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="afelix.service.controler.file.IFileControler"/>
+    </Class>
+    <Class name="afelix.service.interfaces.lAFelix" x="546" y="554">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="afelix.monitor.activity.AFelixActivity.RefreshList"
+        x="457" y="138">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="afelix.service.controler.felixcontrol.ConsoleInterpreter"
+        x="300" y="958">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="afelix.service.controler.file.FileControler"
+            endpointName="filecontrol" kind="Simple"/>
+        <Association
+            destinationClassName="afelix.service.controler.felixcontrol.FelixControler"
+            endpointName="fc" kind="Simple"/>
+        <Communication destinationClassName="afelix.service.controler.felixcontrol.FelixControler"/>
+        <Communication destinationClassName="afelix.service.controler.file.FileControler"/>
+    </Class>
+</ClassDiagram>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PackageAnalysis>
+    <Package name="afelix.monitor.activity" x="144" y="51">
+        <DependencyLink destination="afelix.service.controler.database"/>
+        <DependencyLink destination="afelix.service.interfaces"/>
+    </Package>
+    <Package name="afelix.service.controler.database" x="405" y="55">
+        <DependencyLink destination="afelix.service.controler.file"/>
+        <DependencyLink destination="afelix.monitor.activity"/>
+    </Package>
+    <Package name="afelix.service.controler.felixcontrol" x="453" y="194">
+        <DependencyLink destination="afelix.service.controler.file"/>
+    </Package>
+    <Package name="afelix.service.controler.file" x="260" y="286"/>
+    <Package name="afelix.service.interfaces" x="123" y="334"/>
+    <Package name="afelix.service.service" x="272" y="459">
+        <DependencyLink destination="afelix.service.controler.felixcontrol"/>
+        <DependencyLink destination="afelix.service.interfaces"/>
+    </Package>
+</PackageAnalysis>

@@ -89,7 +89,7 @@ public class ConsoleInterpreter{
 				return(fc.install(cwords[1], defaultPath));
 			}
 			else if(cwords.length == 3) 
-				return(fc.install(cwords[2], cwords[1]));
+				return(fc.install(cwords[1], cwords[2]));
 			else{
 				Log.e(TAG, "Wrong command!");
 				return "Wrong command!";
