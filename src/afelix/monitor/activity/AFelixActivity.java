@@ -66,7 +66,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	private Intent showBundleIntent = null;
 	private Bundle getInstallBundle = null;
 
-	private ArrayList installList = null;
+	private ArrayList<?> installList = null;
 	private ArrayList<String> bundleInstallList = new ArrayList<String>();
 	private HashMap<Integer, String> installBundleMap = null;
 	//private Iterator<String> it = null;
@@ -74,6 +74,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	private ArrayAdapter<String> mArrayAdapter = null;
 	private String[] bundles = null;
 	private String[] operations = null;
+	private String commandStore = null;
+	
 	private Thread refreshThread = null;
 	
 	private RefreshList refresh = null;
@@ -94,34 +96,47 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				getApplicationContext(), bindServiceIntent);
 
 		bindService(bindServiceIntent, mConnection, Context.BIND_AUTO_CREATE);
-		//Toast.makeText(this, "OnCreate", Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, "OnCreate", Toast.LENGTH_SHORT).show();
 	}
 	
 	
 	@Override
 	protected void onStart(){
 		super.onStart();
-		
+		//Toast.makeText(this, "OnStart", Toast.LENGTH_SHORT).show();
 	}
 	
 	
 	@Override
 	protected void onResume(){
 		super.onResume();
-		
+		//Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
 	}
 	
 	
 	@Override
+	protected void onRestart(){
+		super.onRestart();
+		Command.setText(commandStore);
+	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
+		commandStore = Command.getText().toString();
+	}
+	
+	@Override
 	protected void onStop(){
 		super.onStop();
+		//Toast.makeText(this, "OnStop", Toast.LENGTH_SHORT).show();
 	}
 	
 	
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
-		
+		//Toast.makeText(this, "OnDestroy", Toast.LENGTH_SHORT).show();
 		if(mConnection != null)
 			unbindService(mConnection);
 	}
@@ -139,7 +154,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				installList = getInstallBundle.getParcelableArrayList("installBundle");
 				installBundleMap = (HashMap<Integer, String>) installList.get(0);
 				//Toast.makeText(this, "" + installBundleMap.size(), Toast.LENGTH_LONG).show();
-				for(Iterator i = installBundleMap.entrySet().iterator(); i.hasNext();){
+				for(Iterator<?> i = installBundleMap.entrySet().iterator(); i.hasNext();){
 					Map.Entry temp = (Map.Entry)i.next();
 					//Toast.makeText(this, (String)temp.getValue(), Toast.LENGTH_LONG).show();
 					bundleInstallList.add((String)temp.getValue());
@@ -168,7 +183,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			try {
 				if(mAFelixService.interpret(Command.getText().toString())){
 					//Refresh();
-					refreshThread.run();
+					if(refreshThread.getState() == Thread.State.NEW)
+						refreshThread.start();
 					Command.setText("");
 				}
 				//else 
@@ -181,7 +197,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			break;
 		case R.id.refresh:
 			//Refresh();
-			refreshThread.run();
+			if(refreshThread.getState() == Thread.State.NEW)
+				refreshThread.start();
 			break;
 		case R.id.reset:
 			Command.setText("");
@@ -224,7 +241,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 						mAFelixService = IAFelixService.Stub.asInterface(service);
 						
 						//Refresh();
-						refreshThread.run();
+						refreshThread.start();
 					}
 				}catch (RemoteException re){
 					re.printStackTrace();
@@ -392,7 +409,24 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			Refresh();
+			try{
+				
+				synchronized(this){
+					//this.wait();
+					
+					runOnUiThread(new Runnable(){
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							Refresh();
+						}
+						
+					});
+				}
+			}catch(IllegalThreadStateException te){
+				Log.e(TAG, te.toString());
+			}
 		}
 	}
 	
