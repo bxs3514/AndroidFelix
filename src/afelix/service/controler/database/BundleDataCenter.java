@@ -161,6 +161,9 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 	private void initControl(){
 		
 		afHelper = new AFelixSQLiteHelper(getApplicationContext());
+		
+		//Toast.makeText(this, String.valueOf(afHelper.a), Toast.LENGTH_LONG).show();
+		
 	    info = (TextView)findViewById(R.id.bundle_select_number);
 		
 	    allBundlesList = (ListView)findViewById(R.id.all_bundle_list);
@@ -227,7 +230,7 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 			
 			//as.add("1");
 			
-			if(bundleLocation.size() == 1){
+			if(bundleLocation.size() >= 1){//add iterator to bundlelocation!!!
 				tempBundleLocation = mFileControler.getLocation();
 				bundleFiles = mFileControler.getFileList(tempBundleLocation, null);
 				//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();
@@ -250,7 +253,7 @@ public class BundleDataCenter extends Activity implements IDatabaseControler, On
 			Log.e(TAG, "The table is existing.", se);
 		 
 			//as.add("1");
-			if(bundleLocation.size() == 1){
+			if(bundleLocation.size() >= 1){//The same!!!
 				tempBundleLocation = mFileControler.getLocation();
 				bundleFiles = mFileControler.getFileList(tempBundleLocation, null);
 				//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();

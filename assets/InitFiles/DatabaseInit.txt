@@ -1,0 +1,20 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE `App` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`Name`	TEXT NOT NULL
+);
+
+CREATE TABLE `Bundle` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`Name`	TEXT,
+	`Statement`	INTEGER NOT NULL,
+	`Position`	TEXT NOT NULL
+);
+
+CREATE TABLE `Dependency` (
+	`AppId`	INTEGER,
+	`BundleId`	INTEGER,
+	FOREIGN KEY('AppId') REFERENCES App('id')
+	FOREIGN KEY('BundleId') REFERENCES Bundle('id')
+);
