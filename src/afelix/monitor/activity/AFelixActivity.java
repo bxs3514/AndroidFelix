@@ -292,7 +292,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 
 			@Override
 			public void onItemClick(AdapterView<?> parent,
-					View view, int position, long id) {
+					View view, int position, long id) { 
 				// TODO Auto-generated method stub
 				//final int finalPositon = position;
 				final String bundle = (String)parent.getItemAtPosition(position);
