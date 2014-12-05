@@ -1,0 +1,61 @@
+
+		//dropTable("BundleLocationTable");
+		
+		/*String tempBundleLocation;
+		try{
+			//as.add("BundleId");
+			as.add("BundleName");
+			as.add("BundleLocation");
+			
+			//hs.put("BundleId", "INTEGER NOT NULL UNIQUE");
+			hs.put("BundleName", "VARCHAR(255) UNIQUE");
+			hs.put("BundleLocation", "VARCHAR(255)");
+			
+			addTable("BundleLocationTable", as, hs);
+			as.clear();
+			hs.clear();
+			
+			//as.add("1");
+			
+			if(bundleLocation.size() >= 1){//add iterator to bundlelocation!!!
+				tempBundleLocation = mFileControler.getLocation();
+				bundleFiles = mFileControler.getFileList(tempBundleLocation, null);
+				//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();
+				if(bundleFiles != null){
+					for(File f : bundleFiles){
+						as.add(f.getName());
+						as.add(f.getParent());
+						Insert("BundleLocationTable", as);
+						as.clear();
+					}
+				}else{
+					Toast.makeText(this, "No Bundles!", Toast.LENGTH_LONG).show();
+					Log.e(TAG, "No Bundles!");
+				}
+			}else{
+				//The methods used to get bundles from lots of positions.
+			}
+		}catch(SQLiteException se){
+			//Toast.makeText(this, "The table isn't existing, create a new one.", Toast.LENGTH_LONG).show();
+			Log.e(TAG, "The table is existing.", se);
+		 
+			//as.add("1");
+			if(bundleLocation.size() >= 1){//The same!!!
+				tempBundleLocation = mFileControler.getLocation();
+				bundleFiles = mFileControler.getFileList(tempBundleLocation, null);
+				//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();
+				if(bundleFiles != null){
+					for(File f : bundleFiles){
+						as.add(f.getName());
+						as.add(f.getParent());
+						Insert("BundleLocationTable", as);
+						as.clear();
+					}
+				}else{
+					Toast.makeText(this, "No Bundles!", Toast.LENGTH_LONG).show();
+					Log.e(TAG, "No Bundles!");
+				} 
+			}else{
+				
+			}
+		}*/

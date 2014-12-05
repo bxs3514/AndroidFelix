@@ -8,4 +8,7 @@ public interface IDatabaseControler {
 	public void dropTable(String table);
 	public void Insert(String table, ArrayList<String> columnElements);
 	public void Delete(String table,  ArrayList<String> factor);
+	public ArrayList<HashMap<String,String>> Query(String SqlQuery);
+	public ArrayList<HashMap<String,String>> Query(String[] select, 
+			String table, String where);
 }

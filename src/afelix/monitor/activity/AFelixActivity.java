@@ -5,7 +5,7 @@
  *
  * This is a monitor to show the bundle states to users.
  *
- * @lastEdit 11/24/2014
+ * @lastEdit 12/6/2014
  * 
  */
 
@@ -19,6 +19,7 @@ import java.util.Map;
 
 import afelix.afelixservice.androidfelix.R;
 import afelix.service.controler.database.BundleDataCenter;
+import afelix.service.controler.database.DatabaseControler;
 import afelix.service.interfaces.IAFelixService;
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
@@ -27,6 +28,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -52,34 +54,33 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 
 	final private static String TAG = "AFelixActivity";
 	
-	private ServiceConnection mConnection = null;
-	private IAFelixService mAFelixService = null;
+	private ServiceConnection mConnection;
+	private IAFelixService mAFelixService;
 	
-	private ListView BundleList = null;
-	private EditText Command = null;
-	private TextView SystemInfo = null;
-	private Button ConfirmBtn = null;
-	private Button ResetBtn = null;
-	private Button RefreshBtn = null;
-	private Button ShowAllBundleBtn = null;
-	private Intent bindServiceIntent = null;
-	private Intent showBundleIntent = null;
-	private Bundle getInstallBundle = null;
+	private DatabaseControler afDbCtrl;
+	
+	private ListView BundleList;
+	private EditText Command;
+	private TextView SystemInfo;
+	private Button ConfirmBtn;
+	private Button ResetBtn;
+	private Button RefreshBtn;
+	private Button ShowAllBundleBtn;
+	private Intent bindServiceIntent;
+	private Intent showBundleIntent;
+	private Bundle getInstallBundle;
 
-	private ArrayList<?> installList = null;
-	private ArrayList<String> bundleInstallList = new ArrayList<String>();
-	private HashMap<Integer, String> installBundleMap = null;
-	//private Iterator<String> it = null;
-	private ArrayList<String> as = null;
-	private ArrayAdapter<String> mArrayAdapter = null;
-	private String[] bundles = null;
-	private String[] operations = null;
-	private String commandStore = null;
+	private ArrayList<?> installList;
+	private ArrayList<String> bundleInstallList;
+	private ArrayList<String> as;
+	private ArrayAdapter<String> mArrayAdapter;
+	private HashMap<Integer, String> installBundleMap;
+	private String[] bundles;
+	private String[] operations;
+	private String commandStore;
 	
-	private Thread refreshThread = null;
-	
-	private RefreshList refresh = null;
-	
+	private Thread refreshThread;
+	private RefreshList refresh;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +163,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 						if((String)temp.getValue() != null && !((String)temp.getValue()).equals(""))
 							mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
 						//Toast.makeText(this, "Command Wrong", Toast.LENGTH_LONG).show();
 						e.printStackTrace();
 					}
@@ -286,8 +286,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private void initViews(){
 		operations = new String[]{"Start", "Stop", "Uninstall"};
-		BundleList = (ListView)findViewById(R.id.bundleList);
+		bundleInstallList = new ArrayList<String>();
+		afDbCtrl = new DatabaseControler(getApplicationContext());
+		ArrayList<String> as = new ArrayList<String>();
+		as.add(getApplicationContext().getPackageManager().getApplicationLabel(getApplicationContext().getApplicationInfo()).toString());
+		afDbCtrl.Insert("App", as);
 		
+		BundleList = (ListView)findViewById(R.id.bundleList);
 		BundleList.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
@@ -429,20 +434,4 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			}
 		}
 	}
-	
-	/*private void Refresh(){
-		try {
-			as = (ArrayList<String>)mAFelixService.getAll();
-			bundles = as.toArray(new String[as.size()]);
-			mArrayAdapter = new ArrayAdapter<String>(AFelixActivity.this, android.R.layout.simple_list_item_1, bundles);
-			BundleList.setAdapter(mArrayAdapter);
-			
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			Log.e(TAG, "Service has unexpected disconnected.", e);
-			e.printStackTrace();
-		}
-	}*/
-
-
 }

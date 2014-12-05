@@ -35,15 +35,12 @@ public class AFelixSQLiteHelper extends SQLiteOpenHelper{
 	private String TABLE_CREATE_SQL;
 	
 	private InputStream initCreateStream;
-	private Context context;
 	
 	
 	public AFelixSQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_INITIAL_VERSION);
-		this.context = context;
 		
 		try {
-			
 			initCreateStream = context.getResources().getAssets().open("InitFiles/DatabaseInit.txt");
 			
 			TABLE_CREATE_SQL = IOUtils.toString(initCreateStream, "utf-8");

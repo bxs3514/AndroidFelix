@@ -7,9 +7,8 @@ CREATE TABLE `App` (
 
 CREATE TABLE `Bundle` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`Name`	TEXT,
-	`Statement`	INTEGER NOT NULL,
-	`Position`	TEXT NOT NULL
+	`Name`	TEXT UNIQUE,
+	`Location`	TEXT NOT NULL
 );
 
 CREATE TABLE `Dependency` (
