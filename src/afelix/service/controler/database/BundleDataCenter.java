@@ -38,10 +38,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 
-enum MODE{
-	ADD, DROP, DELETE, INSERT
-};
-
 public class BundleDataCenter extends Activity implements OnClickListener{
 	private static final String TAG = "DataControler";
 	
@@ -182,44 +178,39 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		ArrayList<String> tempBundleInfo = new ArrayList<String>();
 		
 		
-		//try{
-			if(bundleLocation.size() > 0){//The same!!!
-				String tempBundleLocation = mFileControler.getLocation();
-				bundleFiles = mFileControler.getFileList(tempBundleLocation, null);
-				//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();
-				if(bundleFiles != null){
-					for(File f : bundleFiles){
-						as.add(f.getName());
-						as.add(f.getParent());
-						try{
-							dbCtrl.Insert("Bundle", as);
-						}catch(SQLiteException se){
-							Log.e(TAG, "Can't insert for " + se.toString());
-							return;
-						}
-						as.clear();
-					}
-				}else{
-					Toast.makeText(this, "No Bundles!", Toast.LENGTH_LONG).show();
-					Log.e(TAG, "No Bundles!");
-				} 
+		if(bundleLocation.size() > 0){//The same!!!
+			String tempBundleLocation = mFileControler.getLocation();
+			bundleFiles = mFileControler.getFileList(tempBundleLocation, null);
+			//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();
+			if(bundleFiles != null){
+				for(File f : bundleFiles){
+					as.add(f.getName());
+					as.add(f.getParent());
+					dbCtrl.Insert("Bundle", as);
+					as.clear();
+				}
 			}else{
-				
-			}
+				Toast.makeText(this, "No Bundles!", Toast.LENGTH_LONG).show();
+				Log.e(TAG, "No Bundles!");
+			} 
+		}else{
 			
-			allBundles = dbCtrl.Query(null, "Bundle", null);
-			HashMap<String, String> tempHashMap = new HashMap<String, String>();
-			for(Iterator<HashMap<String, String>> bundleIt = allBundles.iterator(); bundleIt.hasNext(); ){
-				tempHashMap = (HashMap<String, String>) bundleIt.next();
-				//for(Iterator<Entry<String, String>> bundleInfoIt = tempHashMap.entrySet().iterator(); bundleInfoIt.hasNext(); ){
-					//Map.Entry<String, String> bundleInfoEntry = (Map.Entry<String, String>)bundleInfoIt.next();
-				//Toast.makeText(this, "!!!", Toast.LENGTH_LONG).show();
-				tempBundleInfo.add(tempHashMap.get("id") 
-						+ "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tempHashMap.get("Name"));
-				//}
-			}
-			tempHashMap.clear();
-		//}
+		}
+		
+		
+		allBundles = dbCtrl.Query(null, "Bundle", null);
+		HashMap<String, String> tempHashMap = new HashMap<String, String>();
+		for(Iterator<HashMap<String, String>> bundleIt = allBundles.iterator(); bundleIt.hasNext(); ){
+			tempHashMap = (HashMap<String, String>) bundleIt.next();
+			//for(Iterator<Entry<String, String>> bundleInfoIt = tempHashMap.entrySet().iterator(); bundleInfoIt.hasNext(); ){
+				//Map.Entry<String, String> bundleInfoEntry = (Map.Entry<String, String>)bundleInfoIt.next();
+			//Toast.makeText(this, "!!!", Toast.LENGTH_LONG).show();
+			tempBundleInfo.add(tempHashMap.get("id") 
+					+ "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tempHashMap.get("Name"));
+			//}
+		}
+		tempHashMap.clear();
+		
 		totalNumber = tempBundleInfo.size();
 		mArrayAdapter = new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_checked, 
@@ -227,4 +218,5 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		allBundlesList.setAdapter(mArrayAdapter);
 		allBundlesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	}
+
 }

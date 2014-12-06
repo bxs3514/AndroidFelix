@@ -19,6 +19,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+enum MODE{
+	ADD, DROP, DELETE, INSERT, REPLACE
+};
+
+
 public class DatabaseControler implements IDatabaseControler{
 
 private static final String TAG = "DataControler";
@@ -66,6 +71,12 @@ private static final String TAG = "DataControler";
 		setTable(table, factor, null, MODE.DELETE);
 	}
 
+	@Override
+	public void Replace(String table, ArrayList<String> columnElements) {
+		// TODO Auto-generated method stub
+		setTable(table, columnElements, null, MODE.REPLACE);
+	}
+	
 	private void setTable(String table, ArrayList<String> column, 
 			HashMap<String, String> type, MODE mode) throws SQLiteException{
 		
@@ -98,12 +109,12 @@ private static final String TAG = "DataControler";
 			}
 			break;
 		case DROP:
-				DATABASE_UPGRADE = "DROP TABLE IF EXISTS " + table;
-				afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE);
+			DATABASE_UPGRADE = "DROP TABLE IF EXISTS " + table;
+			afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE);
 			break;
 		case INSERT:
-			Query(null, table, null);
-			int n = columnName.length;
+			//Query(null, table, null);
+			int n = afHelper.getReadableDatabase().rawQuery("select * from " + table, null).getColumnCount();
 			DATABASE_UPGRADE = "insert into " + table + " values(null,";
 			for(int i = 0; i < n - 1; i++){
 				if(i != n - 2)
@@ -121,6 +132,26 @@ private static final String TAG = "DataControler";
 			}
 			break;
 		case DELETE:
+			DATABASE_UPGRADE = "delete TABLE IF EXISTS " + table;
+			afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE);
+			break;
+		case REPLACE:
+			n = afHelper.getReadableDatabase().rawQuery("select * from " + table, null).getColumnCount();
+			DATABASE_UPGRADE = "insert or replace into " + table + " values(null,";
+			for(int i = 0; i < n - 1; i++){
+				if(i != n - 2)
+					DATABASE_UPGRADE += "?, ";
+				else DATABASE_UPGRADE += "?)";
+			}
+			
+			try{
+				afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE,
+						column.toArray(new String[column.size()]));
+				
+			}catch(SQLiteException se){
+				Log.e(TAG, "Can't insert for " + se.toString(), se);
+				//Toast.makeText(this, "Can't find the table to insert.", Toast.LENGTH_LONG).show();
+			}
 			break;
 		default:
 			break;
