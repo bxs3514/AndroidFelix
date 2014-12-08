@@ -43,7 +43,6 @@ private static final String TAG = "DataControler";
 	public DatabaseControler(Context context){
 		afHelper = new AFelixSQLiteHelper(context);
 		queryRes = new ArrayList<HashMap<String,String>>();
-		queryRawRes = new HashMap<String,String>();
 	}
 	
 	@Override
@@ -162,7 +161,7 @@ private static final String TAG = "DataControler";
 	public ArrayList<HashMap<String,String>> Query(String SqlQuery){
 		cursor = afHelper.getReadableDatabase().rawQuery(SqlQuery, null);
 		columnName = cursor.getColumnNames();
-		analyseCursor(cursor, queryRes);
+		analyseCursor(cursor);
 		
 		return queryRes;
 	}
@@ -195,7 +194,7 @@ private static final String TAG = "DataControler";
 		
 		cursor = afHelper.getReadableDatabase().rawQuery(DATABASE_QUERY, null);
 		columnName = cursor.getColumnNames();
-		analyseCursor(cursor, queryRes);
+		analyseCursor(cursor);
 		
 		return queryRes;
 	}
@@ -207,15 +206,17 @@ private static final String TAG = "DataControler";
 			return columnName;
 	}
 	
-	
-	private void analyseCursor(Cursor cursor, ArrayList<HashMap<String,String>> as){
+	private void analyseCursor(Cursor cursor){
 		int n = cursor.getColumnCount();
+		
 		while(cursor.moveToNext()){
+			queryRawRes = new HashMap<String,String>();
 			for(int i = 0; i < n; i++){
 				queryRawRes.put(columnName[i], cursor.getString(i));
 			}
 			queryRes.add(queryRawRes);
 		}
+
 		cursor.close();
 	}
 

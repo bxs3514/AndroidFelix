@@ -41,7 +41,6 @@ import android.widget.AdapterView.OnItemClickListener;
 public class BundleDataCenter extends Activity implements OnClickListener{
 	private static final String TAG = "DataControler";
 	
-	
 	private ArrayList<HashMap<String, String>> allBundles;
 	private ArrayList<String> bundleLocation;
 	private ArrayList installBundles;
@@ -197,20 +196,22 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 			
 		}
 		
-		
 		allBundles = dbCtrl.Query(null, "Bundle", null);
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
+		info.setText(allBundles.get(1).get("Name"));
+		//info.setText("");
 		for(Iterator<HashMap<String, String>> bundleIt = allBundles.iterator(); bundleIt.hasNext(); ){
 			tempHashMap = (HashMap<String, String>) bundleIt.next();
 			//for(Iterator<Entry<String, String>> bundleInfoIt = tempHashMap.entrySet().iterator(); bundleInfoIt.hasNext(); ){
 				//Map.Entry<String, String> bundleInfoEntry = (Map.Entry<String, String>)bundleInfoIt.next();
 			//Toast.makeText(this, "!!!", Toast.LENGTH_LONG).show();
+			//info.append(tempHashMap.get("Name"));
 			tempBundleInfo.add(tempHashMap.get("id") 
 					+ "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tempHashMap.get("Name"));
 			//}
+			
 		}
-		tempHashMap.clear();
-		
+		//tempHashMap.clear();
 		totalNumber = tempBundleInfo.size();
 		mArrayAdapter = new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_checked, 
