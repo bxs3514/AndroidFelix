@@ -99,6 +99,7 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch(v.getId()){
 		case R.id.install:
+			dbCtrl.closeDatabase();
 			installAndroidBundle = new Bundle();
 			installIntent = new Intent(this, AFelixActivity.class);
 			//Toast.makeText(this, "Start install", Toast.LENGTH_LONG).show();
@@ -198,7 +199,8 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		
 		allBundles = dbCtrl.Query(null, "Bundle", null);
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
-		info.setText(allBundles.get(1).get("Name"));
+		//if(allBundles != null)
+			//info.setText(allBundles.get(1).get("Name"));
 		//info.setText("");
 		for(Iterator<HashMap<String, String>> bundleIt = allBundles.iterator(); bundleIt.hasNext(); ){
 			tempHashMap = (HashMap<String, String>) bundleIt.next();

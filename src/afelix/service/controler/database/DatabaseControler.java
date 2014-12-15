@@ -219,5 +219,8 @@ private static final String TAG = "DataControler";
 
 		cursor.close();
 	}
-
+	
+	public void closeDatabase(){
+		this.afHelper.close();
+	}
 }

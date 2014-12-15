@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: G:\\Dropbox\\Graduate Design\\AndroidFelix\\src\\afelix\\service\\interfaces\\IAFelixService.aidl
+ * Original file: /Users/zlab/Dropbox/Graduate Design/AndroidFelix/src/afelix/service/interfaces/IAFelixService.aidl
  */
 package afelix.service.interfaces;
 public interface IAFelixService extends android.os.IInterface

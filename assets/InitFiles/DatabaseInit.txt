@@ -2,7 +2,7 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE `App` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`Name`	TEXT NOT NULL
+	`Name`	TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE `Bundle` (

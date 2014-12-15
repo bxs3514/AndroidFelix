@@ -177,7 +177,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch(v.getId()){
 		case R.id.confirm:
 			try {
@@ -191,7 +190,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					//Toast.makeText(AFelixActivity.this, "Your command is wrong!",
 							//Toast.LENGTH_SHORT).show();
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			break;
@@ -235,7 +234,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
-				// TODO Auto-generated method stub
+				
 				try{
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
@@ -250,7 +249,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
-				// TODO Auto-generated method stub
+				
 				Toast.makeText(AFelixActivity.this, "Service has unexpected disconnected", Toast.LENGTH_LONG).show();
 				mAFelixService = null;
 			}
@@ -298,7 +297,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			@Override
 			public void onItemClick(AdapterView<?> parent,
 					View view, int position, long id) { 
-				// TODO Auto-generated method stub
+				
 				//final int finalPositon = position;
 				final String bundle = (String)parent.getItemAtPosition(position);
 				final String bundleId = (bundle.split("\\s+"))[0];
@@ -313,14 +312,14 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
+						
 						switch(which){
 						case 0:
 							try {
 								mAFelixService.interpret("start " + bundleId);
 								refresh.run();
 							} catch (RemoteException e) {
-								// TODO Auto-generated catch block
+								
 								e.printStackTrace();
 							}
 							break;
@@ -329,7 +328,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 								mAFelixService.interpret("stop " + bundleId);
 								refresh.run();
 							} catch (RemoteException e) {
-								// TODO Auto-generated catch block
+								
 								e.printStackTrace();
 							}
 							break;
@@ -338,7 +337,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 								mAFelixService.interpret("uninstall " + bundleId);
 								refresh.run();
 							} catch (RemoteException e) {
-								// TODO Auto-generated catch block
+								
 								e.printStackTrace();
 							}
 							break;
@@ -369,7 +368,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 						//else 
 							//Toast.makeText(AFelixActivity.this, "Your command is wrong!", Toast.LENGTH_SHORT).show();
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					}
 				}
@@ -404,7 +403,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				BundleList.setAdapter(mArrayAdapter);
 				
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
+				
 				Log.e(TAG, "Service has unexpected disconnected.", e);
 				e.printStackTrace();
 			}
@@ -413,17 +412,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			try{
-				
 				synchronized(this){
 					//this.wait();
 					
 					runOnUiThread(new Runnable(){
-						
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
 							Refresh();
 						}
 						
