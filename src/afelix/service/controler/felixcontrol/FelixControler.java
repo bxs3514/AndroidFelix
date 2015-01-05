@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.felix.framework.Felix;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import android.content.Context;
@@ -25,8 +26,9 @@ import android.util.Log;
 public class FelixControler implements BundleControler{
 	final private static String TAG = "FelixControler";
 	
-	private Felix felixFramework = null;
-	private ConsoleInterpreter mInterpreter = null;
+	private Felix felixFramework;
+	private Bundle resBundle;
+	private ConsoleInterpreter mInterpreter;
 	
 	private String res = new String();
 	private boolean su = false;
@@ -72,12 +74,24 @@ public class FelixControler implements BundleControler{
 	}
 	
 
+	@Override
+	public String find(String bundle) {
+		res = this.MainControler(bundle, "", 0);
+		return res;
+	}
+	
+	
 	public String interpret(String command){
 		return mInterpreter.interpret(command);
 	}
 
 	public void setSu(boolean su) {
 		this.su = su;
+	}
+	
+	public Bundle getResBundle(String bundle){
+		find(bundle);
+		return resBundle;
 	}
 	
 	private String MainControler(String bundle, String location, int command){
@@ -117,6 +131,7 @@ public class FelixControler implements BundleControler{
 			}
 				
 			return "Bundle:" + bundle + " has installed successfully";
+		case 0://find bundle
 		case 1://uninstall a bundle
 		case 16://stop a bundle
 		case 32://start a bundle
@@ -152,6 +167,9 @@ public class FelixControler implements BundleControler{
 	        }
 	        
 	        switch(command){
+	        case 0:
+	        	resBundle = b;
+	        	return "Bundle: " + b.getSymbolicName() + " is found."; 
 	        case 1:
 	        	try {
 		            b.uninstall();
@@ -175,9 +193,12 @@ public class FelixControler implements BundleControler{
 	        	try {
 	        		
 		            b.start(org.osgi.framework.Bundle.START_ACTIVATION_POLICY);
-	        		
+	        		//b.getRegisteredServices();
+		            
+		            //Log.e(TAG, "!!!!!!" + b.getServicesInUse().toString());
 		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
 		                    + b + " started");
+		            
 		        } catch (BundleException be) {
 		        	System.out.println(be.toString());
 		        }
@@ -187,7 +208,6 @@ public class FelixControler implements BundleControler{
 			return "Invalid command.";   
 		}
 	}
-	
 	
 	private String MainControler(Context context, String bundle, int command){
 		switch(command){
@@ -259,5 +279,6 @@ public class FelixControler implements BundleControler{
 		}
 		return as;
 	}
+
 	
 }

@@ -20,5 +20,6 @@ public interface BundleControler {
 	public String uninstall(String bundle);
 	public String start(String bundle);
 	public String stop(String bundle);
+	public String find(String bundle);
 	public ArrayList<String> BundleInfo(int command);
 }

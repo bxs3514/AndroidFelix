@@ -144,26 +144,21 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		//Toast.makeText(this, requestCode + " " + resultCode + " ", Toast.LENGTH_LONG).show();
 		switch (resultCode){
 		case RESULT_OK:
-			//Toast.makeText(this, "get", Toast.LENGTH_LONG).show();
 			if(data.getExtras() != null){
 				Bundle b = data.getExtras();
 				
 				getInstallBundle = data.getExtras();
 				installList = getInstallBundle.getParcelableArrayList("installBundle");
 				installBundleMap = (HashMap<Integer, String>) installList.get(0);
-				//Toast.makeText(this, "" + installBundleMap.size(), Toast.LENGTH_LONG).show();
 				for(Iterator<?> i = installBundleMap.entrySet().iterator(); i.hasNext();){
 					Map.Entry temp = (Map.Entry)i.next();
-					//Toast.makeText(this, (String)temp.getValue(), Toast.LENGTH_LONG).show();
 					bundleInstallList.add((String)temp.getValue());
 					try {
 						if((String)temp.getValue() != null && !((String)temp.getValue()).equals(""))
 							mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
 					} catch (RemoteException e) {
-						//Toast.makeText(this, "Command Wrong", Toast.LENGTH_LONG).show();
 						e.printStackTrace();
 					}
 				}
@@ -198,6 +193,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			//Refresh();
 			if(refreshThread.getState() == Thread.State.NEW)
 				refreshThread.start();
+			try {
+				TextView tv = (TextView)findViewById(R.id.textView1);
+				tv.setText("!!!!!" + mAFelixService.getBundlesContainer("1").getResBundleHs().get("bundle").getSymbolicName());
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		case R.id.reset:
 			Command.setText("");

@@ -75,9 +75,9 @@ public class ConsoleInterpreter{
 				return "Wrong command!";
 			}
 			
-			if(cwords[0].equals("start")) return(fc.start(cwords[1]));
-			else if(cwords[0].equals("stop")) return(fc.stop(cwords[1]));
-			else if	(cwords[0].equals("uninstall")) return(fc.uninstall(cwords[1]));
+			if(cwords[0].equals("start")) return (fc.start(cwords[1]));
+			else if (cwords[0].equals("stop")) return (fc.stop(cwords[1]));
+			else if	(cwords[0].equals("uninstall")) return (fc.uninstall(cwords[1]));
 			else{
 				Log.e(TAG, "Wrong command!");
 				return "Wrong command!";
@@ -94,6 +94,9 @@ public class ConsoleInterpreter{
 				Log.e(TAG, "Wrong command!");
 				return "Wrong command!";
 			}
+		}
+		else if (cwords[0].equals("find")) {
+			return (fc.find(cwords[1]));
 		}
 		else{
 			Log.e(TAG, "Wrong command!");
