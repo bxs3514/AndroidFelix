@@ -183,6 +183,7 @@ public class AFelixAidlService extends Service{
 		@Override
 		public BundlePresent getBundlesContainer(String bundle)
 				throws RemoteException {
+			
 			bp.setResBundle(fc.getResBundle(bundle));
 			return bp;
 		}
@@ -197,7 +198,6 @@ public class AFelixAidlService extends Service{
 
 		@Override
 		public boolean interpret(String command) throws RemoteException {
-			
 			String res = fc.interpret(command);
 			show(res);
 			

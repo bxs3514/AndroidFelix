@@ -61,7 +61,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private ListView BundleList;
 	private EditText Command;
-	private TextView SystemInfo;
+	//private TextView SystemInfo;
 	private Button ConfirmBtn;
 	private Button ResetBtn;
 	private Button RefreshBtn;
@@ -193,13 +193,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			//Refresh();
 			if(refreshThread.getState() == Thread.State.NEW)
 				refreshThread.start();
-			try {
-				TextView tv = (TextView)findViewById(R.id.textView1);
-				tv.setText("!!!!!" + mAFelixService.getBundlesContainer("1").getResBundleHs().get("bundle").getSymbolicName());
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			break;
 		case R.id.reset:
 			Command.setText("");

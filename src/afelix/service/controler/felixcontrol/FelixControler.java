@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.util.tracker.ServiceTracker;
 
 import android.content.Context;
 import android.util.Log;
@@ -135,6 +136,7 @@ public class FelixControler implements BundleControler{
 		case 1://uninstall a bundle
 		case 16://stop a bundle
 		case 32://start a bundle
+        	//Log.e(TAG, "!!!!!!222222");
 			long bid = -1;
 			boolean isLong = false;
 			
@@ -143,7 +145,10 @@ public class FelixControler implements BundleControler{
 				if(bundle.charAt(i) < '0' || bundle.charAt(i) > '9') break;
 				if(i == bundle.length() - 1){
 					bid = Long.parseLong(bundle);
-					if(bid == 0 && !su) return "Permission denied.";
+					if(bid == 0 && !su) {
+						resBundle = felixFramework.getBundleContext().getBundle(0);
+						return "Permission denied.";
+					}
 					isLong = true;
 				}
 			}
@@ -166,6 +171,7 @@ public class FelixControler implements BundleControler{
 	            return "The bundle " + bundle + " doesn't exist.";
 	        }
 	        
+	        //ServiceTracker st = null;
 	        switch(command){
 	        case 0:
 	        	resBundle = b;
@@ -175,20 +181,22 @@ public class FelixControler implements BundleControler{
 		            b.uninstall();
 		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
 		                    + b + " has uninstalled from felix.");
+		            return "Bundle: " + bundle + " has installed successfully";
 		        } catch (BundleException be) {
 		        	Log.e(TAG, be.toString(), be);
+		        	return "Unable to uninstall Bundle: " + bundle + " for\n" + be.toString();
 		        }
-	        	return "Bundle: " + bundle + " has installed successfully";
 	        case 16:
 	        	try {
 		            b.stop(org.osgi.framework.Bundle.RESOLVED);
 		            
 		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
 		                    + b + " stopped");
+		        	return "Bundle: " + bundle + " has stoped successfully";
 		        } catch (BundleException be) {
 		        	Log.e(TAG, be.toString(), be);
+		        	return "Unable to stop Bundle: " + bundle + " for\n" + be.toString();
 		        }
-	        	return "Bundle: " + bundle + " has stoped successfully";
 	        case 32:
 	        	try {
 	        		
@@ -198,11 +206,12 @@ public class FelixControler implements BundleControler{
 		            //Log.e(TAG, "!!!!!!" + b.getServicesInUse().toString());
 		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
 		                    + b + " started");
-		            
+		            return "Bundle: " + bundle + " has started successfully";
 		        } catch (BundleException be) {
 		        	System.out.println(be.toString());
+		        	return "Unable to start Bundle: " + bundle + " for\n" + be.toString();
 		        }
-				return "Bundle: " + bundle + " has started successfully";
+				
 	        }
 		default:
 			return "Invalid command.";   

@@ -12,8 +12,6 @@
 
 package afelix.service.interfaces;
 
-import java.util.HashMap;
-
 import org.osgi.framework.Bundle;
 
 import android.os.Parcel;
@@ -21,7 +19,7 @@ import android.os.Parcelable;
 
 public class BundlePresent implements Parcelable{
 	
-	private HashMap<String, Bundle> hs;
+	private Bundle resBundle;
 
 	public BundlePresent(){
 		
@@ -32,7 +30,7 @@ public class BundlePresent implements Parcelable{
 	}
 	
 	private void readFromParcel(Parcel in) {
-		hs = (HashMap<String, Bundle>) in.readValue(HashMap.class.getClassLoader());
+		resBundle = (Bundle) in.readValue(Bundle.class.getClassLoader());
 	}
 
 	@Override
@@ -42,7 +40,7 @@ public class BundlePresent implements Parcelable{
 	
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeMap(hs);
+		out.writeValue(resBundle);
 	} 
 	
 	public static final Parcelable.Creator<BundlePresent> CREATOR 
@@ -60,12 +58,12 @@ public class BundlePresent implements Parcelable{
 			}
 	};
 
-	public HashMap<String, Bundle> getResBundleHs() {
-		return hs;
+	public Bundle getResBundle() {
+		return resBundle;
 	}
 
 	public void setResBundle(Bundle resBundle) {
-		hs.put("bundle", resBundle);
+		this.resBundle = resBundle;
 	}
 
 }
