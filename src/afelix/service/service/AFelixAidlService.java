@@ -184,7 +184,7 @@ public class AFelixAidlService extends Service{
 		public BundlePresent getBundlesContainer(String bundle)
 				throws RemoteException {
 			
-			bp.setResBundle(fc.getResBundle(bundle));
+			//bp.setResBundle(fc.getResBundle(bundle));
 			return bp;
 		}
 		

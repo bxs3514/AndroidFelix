@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.util.tracker.ServiceTracker;
-
 import android.content.Context;
 import android.util.Log;
 

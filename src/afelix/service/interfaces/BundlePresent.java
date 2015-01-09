@@ -12,14 +12,12 @@
 
 package afelix.service.interfaces;
 
-import org.osgi.framework.Bundle;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class BundlePresent implements Parcelable{
 	
-	private Bundle resBundle;
+	private String result;
 
 	public BundlePresent(){
 		
@@ -30,7 +28,8 @@ public class BundlePresent implements Parcelable{
 	}
 	
 	private void readFromParcel(Parcel in) {
-		resBundle = (Bundle) in.readValue(Bundle.class.getClassLoader());
+		//resBundle = (Bundle) in.readValue(Bundle.class.getClassLoader());
+		result = (String)in.readString();
 	}
 
 	@Override
@@ -40,7 +39,7 @@ public class BundlePresent implements Parcelable{
 	
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeValue(resBundle);
+		//out.writeValue(resBundle);
 	} 
 	
 	public static final Parcelable.Creator<BundlePresent> CREATOR 
@@ -58,12 +57,11 @@ public class BundlePresent implements Parcelable{
 			}
 	};
 
-	public Bundle getResBundle() {
-		return resBundle;
+	public String getResBundle() {
+		return result;
 	}
 
-	public void setResBundle(Bundle resBundle) {
-		this.resBundle = resBundle;
+	public void setResBundle(String bundle){
+		
 	}
-
 }
