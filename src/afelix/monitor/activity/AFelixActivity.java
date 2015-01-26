@@ -176,21 +176,16 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		case R.id.confirm:
 			try {
 				if(mAFelixService.interpret(Command.getText().toString())){
-					//Refresh();
 					if(refreshThread.getState() == Thread.State.NEW)
 						refreshThread.start();
 					Command.setText("");
 				}
-				//else 
-					//Toast.makeText(AFelixActivity.this, "Your command is wrong!",
-							//Toast.LENGTH_SHORT).show();
 			} catch (RemoteException e) {
 				
 				e.printStackTrace();
 			}
 			break;
 		case R.id.refresh:
-			//Refresh();
 			if(refreshThread.getState() == Thread.State.NEW)
 				refreshThread.start();
 			break;
@@ -279,11 +274,12 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
     }
 	
 	private void initViews(){
-		operations = new String[]{"Start", "Stop", "Uninstall"};
+		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall"};
 		bundleInstallList = new ArrayList<String>();
 		afDbCtrl = new DatabaseControler(getApplicationContext());
 		ArrayList<String> as = new ArrayList<String>();
-		as.add(getApplicationContext().getPackageManager().getApplicationLabel(getApplicationContext().getApplicationInfo()).toString());
+		as.add(getApplicationContext().getPackageManager()
+				.getApplicationLabel(getApplicationContext().getApplicationInfo()).toString());
 		afDbCtrl.Insert("App", as);
 		
 		BundleList = (ListView)findViewById(R.id.bundleList);
@@ -327,7 +323,26 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 								e.printStackTrace();
 							}
 							break;
+						
 						case 2:
+							try {
+								mAFelixService.interpret("update " + bundleId);
+								refresh.run();
+							} catch (RemoteException e) {
+								
+								e.printStackTrace();
+							}
+							break;
+						case 3:
+							try {
+								mAFelixService.interpret("restart " + bundleId);
+								refresh.run();
+							} catch (RemoteException e) {
+								
+								e.printStackTrace();
+							}
+							break;
+						case 4:
 							try {
 								mAFelixService.interpret("uninstall " + bundleId);
 								refresh.run();

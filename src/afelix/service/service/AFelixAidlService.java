@@ -198,7 +198,7 @@ public class AFelixAidlService extends Service{
 
 		@Override
 		public boolean interpret(String command) throws RemoteException {
-			String res = fc.interpret(command);
+			String res = fc.interpret(getApplicationContext(), command);
 			show(res);
 			
 			if(res.equals("Wrong command!")) return false;

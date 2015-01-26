@@ -12,13 +12,21 @@ package afelix.service.controler.felixcontrol;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
+
+import dalvik.system.DexClassLoader;
+import afelix.service.interfaces.BundlePresent;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -27,6 +35,7 @@ public class FelixControler implements BundleControler{
 	
 	private Felix felixFramework;
 	private Bundle resBundle;
+	private BundlePresent mBundle;
 	private ConsoleInterpreter mInterpreter;
 	
 	private String res = new String();
@@ -71,7 +80,25 @@ public class FelixControler implements BundleControler{
 		res = this.MainControler(bundle, "", 16);
 		return res;
 	}
+
 	
+	@Override
+	public String restart(String bundle) {
+		// Restart a specific bundle
+		Log.d(TAG, "About to start bundle: " + bundle);
+		res = this.MainControler(bundle, "", 48);//stop code(16) + start code(32) = 48
+		return res;
+	}
+
+
+	@Override
+	public String update(String bundle) {
+		// Update a specific bundle
+		Log.d(TAG, "About to update bundle: " + bundle);
+		res = this.MainControler(bundle, "", 64);
+		return res;
+	}
+
 
 	@Override
 	public String find(String bundle) {
@@ -80,8 +107,8 @@ public class FelixControler implements BundleControler{
 	}
 	
 	
-	public String interpret(String command){
-		return mInterpreter.interpret(command);
+	public String interpret(Context context, String command){
+		return mInterpreter.interpret(context, command);
 	}
 
 	public void setSu(boolean su) {
@@ -134,7 +161,8 @@ public class FelixControler implements BundleControler{
 		case 1://uninstall a bundle
 		case 16://stop a bundle
 		case 32://start a bundle
-        	//Log.e(TAG, "!!!!!!222222");
+		case 48://restart a bundle
+		case 64://update a bundle
 			long bid = -1;
 			boolean isLong = false;
 			
@@ -155,7 +183,7 @@ public class FelixControler implements BundleControler{
 				org.osgi.framework.Bundle[] bl = felixFramework.getBundleContext().getBundles();
 		        for (int i = 0; bl != null && i < bl.length; i++) {
 		        	org.osgi.framework.Bundle tempBundle = bl[i];
-		        	Log.d(TAG, bundle+"?"+tempBundle.getBundleId());
+		        	Log.d(TAG, bundle+": "+tempBundle.getBundleId());
 		            if (bundle.equals(tempBundle.getBundleId()) || bundle.equals(tempBundle.getLocation())  
 		            		|| bundle.equals(tempBundle.getSymbolicName())) {
 		                bid = tempBundle.getBundleId();
@@ -197,11 +225,7 @@ public class FelixControler implements BundleControler{
 		        }
 	        case 32:
 	        	try {
-	        		
 		            b.start(org.osgi.framework.Bundle.START_ACTIVATION_POLICY);
-	        		//b.getRegisteredServices();
-		            
-		            //Log.e(TAG, "!!!!!!" + b.getServicesInUse().toString());
 		            Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
 		                    + b + " started");
 		            return "Bundle: " + bundle + " has started successfully";
@@ -209,7 +233,27 @@ public class FelixControler implements BundleControler{
 		        	System.out.println(be.toString());
 		        	return "Unable to start Bundle: " + bundle + " for\n" + be.toString();
 		        }
-				
+	        case 48:
+	        	try {
+	        		b.stop(org.osgi.framework.Bundle.RESOLVED);
+	        		b.start(org.osgi.framework.Bundle.START_ACTIVATION_POLICY);
+	        		Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
+		                    + b + " restarted");
+	        		return "Bundle: " + bundle + " has restarted successfully";
+	        	}catch (BundleException be) {
+		        	System.out.println(be.toString());
+		        	return "Unable to restart Bundle: " + bundle + " for\n" + be.toString();
+		        }
+	        case 64:
+	        	try{
+	        		b.update();
+	        		Log.d(TAG, "bundle: " + b.getSymbolicName() + "/" + b.getBundleId() + "/"
+		                    + b + " updated");
+	        		return "Bundle: " + bundle + " has updated successfully";
+	        	}catch (BundleException be) {
+		        	System.out.println(be.toString());
+		        	return "Unable to restart Bundle: " + bundle + " for\n" + be.toString();
+		        }
 	        }
 		default:
 			return "Invalid command.";   
@@ -217,7 +261,8 @@ public class FelixControler implements BundleControler{
 	}
 	
 	private String MainControler(Context context, String bundle, int command){
-		switch(command){
+		return null;
+		/*switch(command){
 			case 2:
 				InputStream bs = null;
 				
@@ -247,7 +292,7 @@ public class FelixControler implements BundleControler{
 			default:
 				return "Invalid command.";
 		}
-		return "Success";
+		return "Success";*/
 	}
 	
 	@Override
@@ -287,5 +332,67 @@ public class FelixControler implements BundleControler{
 		return as;
 	}
 
+	@SuppressLint("NewApi")
+	@Override
+	public BundlePresent execute(Context context, String path, String bundlePack, 
+			String className, String methodName, Object[] parameter, Class<?>...clazz) {
+		// Get result from agent bundle which in assets
+		if(context == null && path == null){
+			Log.e(TAG, "Don't set both context and path to null!");
+			return null;
+		}
+		String result = "Nothing";
+		BundleContext mBundlecontext = felixFramework.getBundleContext();
+		try {
+			Log.d(TAG, "Executing...");
+			File tempFile = null;
+			
+			if(context != null){
+				InputStream bundleStream = context.getAssets().open(bundlePack);
+				tempFile = File.createTempFile(className, ".jar");
+				FileOutputStream fup = new FileOutputStream(tempFile);
+				
+				int read = 0;
+				byte[] buffer = new byte[65536];
+				
+				while((read = bundleStream.read(buffer)) != -1){
+					fup.write(buffer, 0, read);
+				}
+				bundleStream.close();
+				fup.close();
+			}
+			else{
+				tempFile = new File(path);
+			}
+			
+			try{
+				File dexFile = context.getApplicationContext().getDir("bundleDex", 0);
+				DexClassLoader classLoader = new DexClassLoader(
+						tempFile.getAbsolutePath(), dexFile.getAbsolutePath(),
+						null, context.getApplicationContext().getClassLoader());
+				
+				Class<?> loadedClass = classLoader.loadClass(className);
+
+				ServiceReference<?> ref = mBundlecontext.getServiceReference(
+						loadedClass.getName());
+				if(ref != null){
+					loadedClass = mBundlecontext.getService(ref).getClass();
+					Object obj = (Object)mBundlecontext.getService(ref);
+
+					Method m = loadedClass.getMethod(methodName, clazz);
+					result = (String) m.invoke(obj, parameter);
+				}
+				else{
+					Log.e(TAG, "Null serveice!!!");
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mBundle;
+	}
 	
 }
