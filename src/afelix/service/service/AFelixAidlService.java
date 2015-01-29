@@ -99,19 +99,16 @@ public class AFelixAidlService extends Service{
 			try {
 				main_felix_framework.start();
 			} catch (BundleException e) {
-				// TODO Auto-generated catch block
 				Log.e(TAG, "Can't start felix for:"+e.toString(), e);
 			}
 		}
 		
-
 		@Override
 		public void stopFelix() throws RemoteException {
 			
 			try {
 				main_felix_framework.stop();
 			} catch (BundleException e) {
-				// TODO Auto-generated catch block
 				Log.e(TAG, "Can't stop felix for:"+e.toString(), e);
 			}
 		}
@@ -143,6 +140,19 @@ public class AFelixAidlService extends Service{
 		public void stopBundle(String bundle) throws RemoteException {
 			
 			show(fc.stop(bundle));
+		}
+		
+
+		@Override
+		public void resteartBundle(String bundle) throws RemoteException {
+			show(fc.restart(bundle));			
+		}
+		
+
+
+		@Override
+		public void updateBundle(String bundle) throws RemoteException {
+			show(fc.update(bundle));
 		}
 		
 		
@@ -183,8 +193,6 @@ public class AFelixAidlService extends Service{
 		@Override
 		public BundlePresent getBundlesContainer(String bundle)
 				throws RemoteException {
-			
-			//bp.setResBundle(fc.getResBundle(bundle));
 			return bp;
 		}
 		
@@ -205,6 +213,36 @@ public class AFelixAidlService extends Service{
 			else return true;
 		}
 
+
+		@Override
+		public BundlePresent executeBundle(BundlePresent bundle)
+				throws RemoteException {
+			//Log.e(TAG, "!!!!!!!!!!!!!!");
+			//String[] tempClazz = bundle.getClazz();
+			//int paraLength = tempClazz.length;
+			String[] tempClazz = {String.class.getName()};
+			int paraLength = tempClazz.length;
+			Class<?>[] classArray = new Class<?>[paraLength];
+			for(int i = 0; i < paraLength; i++){
+				try {
+					classArray[i] = Class.forName(tempClazz[i]);
+				} catch (ClassNotFoundException e) {
+					Log.e(TAG, "Get Class Fail for: " + e.toString());
+					e.printStackTrace();
+				}
+			}
+			//test!
+			//show(fc.execute2(getApplicationContext()));
+			
+			//return fc.execute(getApplicationContext(), bundle);
+			return fc.execute(getApplicationContext(), bundle,
+					bundle.getPath(), bundle.getBundlePack(), 
+					bundle.getClassName(), 
+					bundle.getMethodName(),
+					bundle.getResKey(),
+					bundle.getParameter(), 
+					classArray);
+		}
 	};
 	
 }

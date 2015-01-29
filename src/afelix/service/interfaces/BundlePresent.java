@@ -13,25 +13,44 @@
 package afelix.service.interfaces;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class BundlePresent implements Parcelable{
 	
+	private String path;
+	private String bundlePack;
+	private String className;
+	private String methodName;
+	private String resKey;
+	private Object[] parameter;
+	private int parameterLength;
+	private String[] clazz;
 	private Map<String, List<Object>> BundleResult;
-
+	
 	public BundlePresent(){
-		
+		BundleResult = new HashMap<String, List<Object>>();
 	}
 	
 	private BundlePresent(Parcel in){
 		readFromParcel(in);
 	}
 	
-	private void readFromParcel(Parcel in) {
+	public void readFromParcel(Parcel in) {
+		path = in.readString();
+		bundlePack = in.readString();
+		className = in.readString();
+		methodName = in.readString();
+		resKey = in.readString();
+		parameter = in.readArray(Object.class.getClassLoader());
+		clazz = new String[in.readInt()];
+		//Log.e("BundlePresent", Integer.toString(clazz.length));
+		in.readStringArray(clazz);
 		BundleResult = in.readHashMap(Map.class.getClassLoader());
 	}
 
@@ -42,6 +61,15 @@ public class BundlePresent implements Parcelable{
 	
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(path);
+		out.writeString(bundlePack);
+		out.writeString(className);
+		out.writeString(methodName);
+		out.writeString(resKey);
+		out.writeArray(parameter);
+		out.writeInt(parameterLength);
+		clazz = new String[parameterLength];
+		out.writeStringArray(clazz);
 		out.writeMap(BundleResult);
 	} 
 	
@@ -60,15 +88,22 @@ public class BundlePresent implements Parcelable{
 			}
 	};
 
-	public void setBundleResult(String type, Object...result){
-		List<Object> resultList = BundleResult.get(type);
-		if(resultList == null){
+	public void setBundleResult(String resKey, Object...result){
+		List<Object> resultList = null;
+		try{
+			resultList = BundleResult.get(resKey);
+			for(Object res : result){
+				resultList.add(res);
+			}
+		}catch(NullPointerException ne){
 			resultList = new ArrayList<Object>();
+			for(Object res : result){
+				resultList.add(res);
+			}
+			//System.out.println("!!" + resKey);
+			//Log.e("BundlePresent", Integer.toString(resultList.size()));
+			BundleResult.put(resKey, resultList);
 		}
-		for(Object res : result){
-			resultList.add(res);
-		}
-		BundleResult.put(type, resultList);
 	}
 
 	public void setBundleResult(Map<String, List<Object>> bundleResult) {
@@ -78,5 +113,49 @@ public class BundlePresent implements Parcelable{
 	public Map<String, List<Object>> getBundleResult() {
 		return BundleResult;
 	}
+	
+	public void setParameters(String path, String bundlePack, 
+			String className, String methodName, String resKey, Object[] parameter, 
+			String[] clazz){
+		this.path = path;
+		this.bundlePack = bundlePack;
+		this.className = className;
+		this.methodName = methodName;
+		this.resKey = resKey;
+		this.parameter = parameter;
+		this.parameterLength = clazz.length;
+		this.clazz = clazz;
+	}
 
+	public String getPath() {
+		return path;
+	}
+
+	public String getBundlePack() {
+		return bundlePack;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public String getMethodName() {
+		return methodName;
+	}
+
+	public Object[] getParameter() {
+		return parameter;
+	}
+
+	public String[] getClazz() {
+		return clazz;
+	}
+
+	public String getResKey() {
+		return resKey;
+	}
+
+	public static Parcelable.Creator<BundlePresent> getCreator() {
+		return CREATOR;
+	}
 }

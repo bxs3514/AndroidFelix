@@ -147,7 +147,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		switch (resultCode){
 		case RESULT_OK:
 			if(data.getExtras() != null){
-				Bundle b = data.getExtras();
+				//Bundle b = data.getExtras();
 				
 				getInstallBundle = data.getExtras();
 				installList = getInstallBundle.getParcelableArrayList("installBundle");
@@ -157,7 +157,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					bundleInstallList.add((String)temp.getValue());
 					try {
 						if((String)temp.getValue() != null && !((String)temp.getValue()).equals(""))
-							mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
+							mAFelixService.installBundleByLocation(((String)temp.getValue()).split("\\s+")[1], null);
+							//mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
 					} catch (RemoteException e) {
 						e.printStackTrace();
 					}

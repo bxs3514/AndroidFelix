@@ -11,9 +11,10 @@
 package afelix.service.interfaces;
 
 import afelix.service.interfaces.BundlePresent;
+import java.util.List;
+import java.lang.Object;
 
 interface IAFelixService{
-	
 	void startFelix();
 	void stopFelix();
 	void installBundle(String bundle);
@@ -21,8 +22,11 @@ interface IAFelixService{
 	void uninstallBundle(String bundle_id);
 	void startBundle(String bundle);
 	void stopBundle(String bundle);
+	void resteartBundle(String bundle);
+	void updateBundle(String bundle);
 	List<String> getAll();
 	int getBundleId(String bundle);
+	BundlePresent executeBundle(inout BundlePresent bundle);
 	BundlePresent getBundlesContainer(String bundle);
 	String dependency(String bundle);
 	boolean interpret(String command);

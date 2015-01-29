@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
@@ -28,6 +29,7 @@ import dalvik.system.DexClassLoader;
 import afelix.service.interfaces.BundlePresent;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 public class FelixControler implements BundleControler{
@@ -35,7 +37,7 @@ public class FelixControler implements BundleControler{
 	
 	private Felix felixFramework;
 	private Bundle resBundle;
-	private BundlePresent mBundle;
+	private BundlePresent resBundlePresent;
 	private ConsoleInterpreter mInterpreter;
 	
 	private String res = new String();
@@ -126,15 +128,18 @@ public class FelixControler implements BundleControler{
 		switch(command){
 		case 2://install bundle
 			FileInputStream bs = null;
-			
+			if(location == null){
+				location = Environment.getExternalStorageDirectory().getPath() + 
+						File.separator + "AFelixData" + File.separator + "Bundle";
+			}
 			try{
 				Log.d(TAG, "Get bundle at: " + location);
 				File f = null;
 					
 				//Escaping when users forget to input '/'
-				if(location.charAt(location.length()-1) == '/')
+				if(location.charAt(location.length()-1) == File.separatorChar)
 					f = new File(location + bundle);
-				else f = new File(location + "/" + bundle);
+				else f = new File(location + File.separatorChar + bundle);
 				
 				bs = new FileInputStream(f);
 			}catch(IOException ie){
@@ -331,25 +336,40 @@ public class FelixControler implements BundleControler{
 		}
 		return as;
 	}
-
+	
+	/**
+	 * Calling agent bundle to execute and get executing result
+	 * 
+	 * @param path: the bundle(jar) package path
+	 * @param bundlePack: package name
+	 * @param className: class name of the package
+	 * @param methodName: deploy method
+	 * @param resKey: hash key, used to write result into bundlepresent
+	 * @param parameter: parameters
+	 * @param clazz: class type of parameters
+	 * 
+	 */
 	@SuppressLint("NewApi")
 	@Override
-	public BundlePresent execute(Context context, String path, String bundlePack, 
-			String className, String methodName, Object[] parameter, Class<?>...clazz) {
+	public BundlePresent execute(Context context, BundlePresent mBundle, 
+			String path, String bundlePack, String className, String methodName, 
+			String resKey, Object[] parameters, Class<?>...clazz) {
 		// Get result from agent bundle which in assets
-		if(context == null && path == null){
+
+		Log.d(TAG, "Executing...");
+		if(context == null && mBundle.getPath() == null){
 			Log.e(TAG, "Don't set both context and path to null!");
 			return null;
 		}
-		String result = "Nothing";
+
 		BundleContext mBundlecontext = felixFramework.getBundleContext();
 		try {
-			Log.d(TAG, "Executing...");
+			//Log.d(TAG, bundlePack);
 			File tempFile = null;
 			
 			if(context != null){
 				InputStream bundleStream = context.getAssets().open(bundlePack);
-				tempFile = File.createTempFile(className, ".jar");
+				tempFile = File.createTempFile("temp", ".jar");
 				FileOutputStream fup = new FileOutputStream(tempFile);
 				
 				int read = 0;
@@ -361,9 +381,9 @@ public class FelixControler implements BundleControler{
 				bundleStream.close();
 				fup.close();
 			}
-			else{
-				tempFile = new File(path);
-			}
+			//else if(path != null){
+				//tempFile = new File(path);
+			//}
 			
 			try{
 				File dexFile = context.getApplicationContext().getDir("bundleDex", 0);
@@ -378,9 +398,10 @@ public class FelixControler implements BundleControler{
 				if(ref != null){
 					loadedClass = mBundlecontext.getService(ref).getClass();
 					Object obj = (Object)mBundlecontext.getService(ref);
-
-					Method m = loadedClass.getMethod(methodName, clazz);
-					result = (String) m.invoke(obj, parameter);
+					
+					Method m = loadedClass.getMethod(mBundle.getMethodName(), clazz);
+					Log.e(TAG, resKey);
+					mBundle.setBundleResult(resKey, m.invoke(obj, parameters));
 				}
 				else{
 					Log.e(TAG, "Null serveice!!!");
@@ -392,7 +413,8 @@ public class FelixControler implements BundleControler{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.resBundlePresent = mBundle;
+		
 		return mBundle;
 	}
-	
 }

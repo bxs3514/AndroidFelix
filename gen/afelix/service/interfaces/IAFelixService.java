@@ -103,6 +103,24 @@ this.stopBundle(_arg0);
 reply.writeNoException();
 return true;
 }
+case TRANSACTION_resteartBundle:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+this.resteartBundle(_arg0);
+reply.writeNoException();
+return true;
+}
+case TRANSACTION_updateBundle:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+this.updateBundle(_arg0);
+reply.writeNoException();
+return true;
+}
 case TRANSACTION_getAll:
 {
 data.enforceInterface(DESCRIPTOR);
@@ -119,6 +137,34 @@ _arg0 = data.readString();
 int _result = this.getBundleId(_arg0);
 reply.writeNoException();
 reply.writeInt(_result);
+return true;
+}
+case TRANSACTION_executeBundle:
+{
+data.enforceInterface(DESCRIPTOR);
+afelix.service.interfaces.BundlePresent _arg0;
+if ((0!=data.readInt())) {
+_arg0 = afelix.service.interfaces.BundlePresent.CREATOR.createFromParcel(data);
+}
+else {
+_arg0 = null;
+}
+afelix.service.interfaces.BundlePresent _result = this.executeBundle(_arg0);
+reply.writeNoException();
+if ((_result!=null)) {
+reply.writeInt(1);
+_result.writeToParcel(reply, android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+}
+else {
+reply.writeInt(0);
+}
+if ((_arg0!=null)) {
+reply.writeInt(1);
+_arg0.writeToParcel(reply, android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+}
+else {
+reply.writeInt(0);
+}
 return true;
 }
 case TRANSACTION_getBundlesContainer:
@@ -279,6 +325,36 @@ _reply.recycle();
 _data.recycle();
 }
 }
+@Override public void resteartBundle(java.lang.String bundle) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(bundle);
+mRemote.transact(Stub.TRANSACTION_resteartBundle, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
+@Override public void updateBundle(java.lang.String bundle) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(bundle);
+mRemote.transact(Stub.TRANSACTION_updateBundle, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
 @Override public java.util.List<java.lang.String> getAll() throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
@@ -307,6 +383,38 @@ _data.writeString(bundle);
 mRemote.transact(Stub.TRANSACTION_getBundleId, _data, _reply, 0);
 _reply.readException();
 _result = _reply.readInt();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
+@Override public afelix.service.interfaces.BundlePresent executeBundle(afelix.service.interfaces.BundlePresent bundle) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+afelix.service.interfaces.BundlePresent _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+if ((bundle!=null)) {
+_data.writeInt(1);
+bundle.writeToParcel(_data, 0);
+}
+else {
+_data.writeInt(0);
+}
+mRemote.transact(Stub.TRANSACTION_executeBundle, _data, _reply, 0);
+_reply.readException();
+if ((0!=_reply.readInt())) {
+_result = afelix.service.interfaces.BundlePresent.CREATOR.createFromParcel(_reply);
+}
+else {
+_result = null;
+}
+if ((0!=_reply.readInt())) {
+bundle.readFromParcel(_reply);
+}
 }
 finally {
 _reply.recycle();
@@ -381,11 +489,14 @@ static final int TRANSACTION_installBundleByLocation = (android.os.IBinder.FIRST
 static final int TRANSACTION_uninstallBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 4);
 static final int TRANSACTION_startBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
 static final int TRANSACTION_stopBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
-static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
-static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
-static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
-static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 10);
-static final int TRANSACTION_interpret = (android.os.IBinder.FIRST_CALL_TRANSACTION + 11);
+static final int TRANSACTION_resteartBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
+static final int TRANSACTION_updateBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
+static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
+static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 10);
+static final int TRANSACTION_executeBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 11);
+static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 12);
+static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 13);
+static final int TRANSACTION_interpret = (android.os.IBinder.FIRST_CALL_TRANSACTION + 14);
 }
 public void startFelix() throws android.os.RemoteException;
 public void stopFelix() throws android.os.RemoteException;
@@ -394,8 +505,11 @@ public void installBundleByLocation(java.lang.String bundle, java.lang.String lo
 public void uninstallBundle(java.lang.String bundle_id) throws android.os.RemoteException;
 public void startBundle(java.lang.String bundle) throws android.os.RemoteException;
 public void stopBundle(java.lang.String bundle) throws android.os.RemoteException;
+public void resteartBundle(java.lang.String bundle) throws android.os.RemoteException;
+public void updateBundle(java.lang.String bundle) throws android.os.RemoteException;
 public java.util.List<java.lang.String> getAll() throws android.os.RemoteException;
 public int getBundleId(java.lang.String bundle) throws android.os.RemoteException;
+public afelix.service.interfaces.BundlePresent executeBundle(afelix.service.interfaces.BundlePresent bundle) throws android.os.RemoteException;
 public afelix.service.interfaces.BundlePresent getBundlesContainer(java.lang.String bundle) throws android.os.RemoteException;
 public java.lang.String dependency(java.lang.String bundle) throws android.os.RemoteException;
 public boolean interpret(java.lang.String command) throws android.os.RemoteException;

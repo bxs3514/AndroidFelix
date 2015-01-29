@@ -37,8 +37,6 @@ public class ConsoleInterpreter{
 		filecontrol = new FileControler();
 		filecontrol.initAFelixFile();
 
-		defaultPath = Environment.getExternalStorageDirectory().getPath();
-		
 		defaultPath = Environment.getExternalStorageDirectory().getPath() + 
 				File.separator + "AFelixData" + File.separator + "Bundle";
 	}
@@ -104,11 +102,11 @@ public class ConsoleInterpreter{
 			return (fc.find(cwords[1]));
 		}
 		else if(cwords[0].equals("exe") || cwords[0].equals("execute")){
-			String path, bundlePack, className, methodName;
-			final int parameterLength = (cwords.length - 5) / 2;
+			String path, bundlePack, className, methodName, resKey;
+			final int parameterLength = (cwords.length - 6) / 2;
 			ArrayList<Object> parameter = new ArrayList<Object>();
 			
-			if(cwords.length < 8){
+			if(cwords.length < 9){
 				Log.e(TAG, "Wrong command!");
 				return "Wrong command!";
 			}
@@ -118,9 +116,10 @@ public class ConsoleInterpreter{
 				bundlePack = cwords[2];
 				className = cwords[3];
 				methodName = cwords[4];
+				resKey = cwords[5];
 				
 				for(int i = 0; i < parameterLength; i--){
-					parameter.add(cwords[5+i]);
+					parameter.add(cwords[6+i]);
 				}
 				
 				Class<?>[] clazz = new Class<?>[parameterLength];
@@ -128,8 +127,8 @@ public class ConsoleInterpreter{
 					clazz[i] = Class.forName(cwords[5+parameterLength]);
 				}
 				
-				fc.execute(context, path, bundlePack, className, methodName, 
-						parameter.toArray(), clazz);
+				//fc.execute(context, path, bundlePack, className, methodName, 
+						//resKey, parameter.toArray(), clazz);
 				return "Execute success!";
 			}catch(Exception e){
 				e.getStackTrace();
