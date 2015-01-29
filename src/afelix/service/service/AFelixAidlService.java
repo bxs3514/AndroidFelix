@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleException;
 
+import afelix.afelixservice.androidfelix.R;
 import afelix.service.controler.felixcontrol.FelixControler;
 import afelix.service.controler.felixcontrol.LaunchFelix;
 import afelix.service.interfaces.BundlePresent;
@@ -29,7 +30,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class AFelixAidlService extends Service{
@@ -41,7 +46,8 @@ public class AFelixAidlService extends Service{
 	private FelixControler fc = null;
 	private BundlePresent bp;
 	
-	String res = new String();
+	private TextView LogInfo;
+	private String res = new String();
 	//private ArrayList<String> info = null;
 	
 	@Override
@@ -53,6 +59,11 @@ public class AFelixAidlService extends Service{
 		main_felix_framework = launchFelix.Launch();
 		fc = new FelixControler(main_felix_framework);
 		bp = new BundlePresent();
+		
+		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.activity_afelix, null);//Get the layout view
+		LogInfo = (TextView)layout.findViewById(R.id.SystemInfo);//Get textview
+		LogInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
 		//info = new ArrayList<String>();
 		
 		Log.d(TAG, "Service has been created.");
@@ -78,6 +89,7 @@ public class AFelixAidlService extends Service{
 		AFelixServiceBinder = null;
 	}
 	
+	
 	private void show(final String s){
 		Handler handler = new Handler(Looper.getMainLooper());
 		handler.post(new Runnable(){
@@ -99,6 +111,7 @@ public class AFelixAidlService extends Service{
 			try {
 				main_felix_framework.start();
 			} catch (BundleException e) {
+				LogInfo.append("Can't start felix for:"+e.toString());
 				Log.e(TAG, "Can't start felix for:"+e.toString(), e);
 			}
 		}
@@ -117,15 +130,15 @@ public class AFelixAidlService extends Service{
 		@Override
 		public void installBundle(String bundle) throws RemoteException {
 			
-			fc.install(AFelixAidlService.this, bundle,  2);
+			fc.install(AFelixAidlService.this, bundle, 2);
 		}
 		
 		
 		@Override
 		public void installBundleByLocation(String bundle, String location)
 				throws RemoteException {
-			
-			show(fc.install(bundle, location));
+			LogInfo.append(fc.install(bundle, location));
+			//show(fc.install(bundle, location));
 		}
 		
 
@@ -133,6 +146,7 @@ public class AFelixAidlService extends Service{
 		public void startBundle(String bundle) throws RemoteException {
 			
 			//fc.start(bundle);
+			//fc.start(bundle)
 			show(fc.start(bundle));
 		}
 		
@@ -217,24 +231,20 @@ public class AFelixAidlService extends Service{
 		@Override
 		public BundlePresent executeBundle(BundlePresent bundle)
 				throws RemoteException {
-			//Log.e(TAG, "!!!!!!!!!!!!!!");
-			//String[] tempClazz = bundle.getClazz();
-			//int paraLength = tempClazz.length;
-			String[] tempClazz = {String.class.getName()};
-			int paraLength = tempClazz.length;
-			Class<?>[] classArray = new Class<?>[paraLength];
-			for(int i = 0; i < paraLength; i++){
+			List<String> tempClazz = bundle.getClazz();
+			Class<?>[] classArray = new Class<?>[tempClazz.size()];
+			int i = 0;
+			for(Iterator<String> iterator = tempClazz.iterator(); iterator.hasNext();){
 				try {
-					classArray[i] = Class.forName(tempClazz[i]);
+					classArray[i] = Class.forName(iterator.next());
+					i++;
 				} catch (ClassNotFoundException e) {
 					Log.e(TAG, "Get Class Fail for: " + e.toString());
 					e.printStackTrace();
 				}
 			}
-			//test!
-			//show(fc.execute2(getApplicationContext()));
 			
-			//return fc.execute(getApplicationContext(), bundle);
+			bp = bundle;
 			return fc.execute(getApplicationContext(), bundle,
 					bundle.getPath(), bundle.getBundlePack(), 
 					bundle.getClassName(), 

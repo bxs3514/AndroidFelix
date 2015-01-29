@@ -400,7 +400,6 @@ public class FelixControler implements BundleControler{
 					Object obj = (Object)mBundlecontext.getService(ref);
 					
 					Method m = loadedClass.getMethod(mBundle.getMethodName(), clazz);
-					Log.e(TAG, resKey);
 					mBundle.setBundleResult(resKey, m.invoke(obj, parameters));
 				}
 				else{
@@ -413,7 +412,6 @@ public class FelixControler implements BundleControler{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.resBundlePresent = mBundle;
 		
 		return mBundle;
 	}

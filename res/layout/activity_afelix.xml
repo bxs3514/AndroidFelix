@@ -78,6 +78,11 @@
             android:id="@+id/bundleList"
             layout = "@layout/main_list_view" />
 		
+        <TextView
+            android:id="@id/SystemInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="System:\n" />
     </LinearLayout>
     
 </RelativeLayout>

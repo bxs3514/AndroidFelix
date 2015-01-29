@@ -29,8 +29,7 @@ public class BundlePresent implements Parcelable{
 	private String methodName;
 	private String resKey;
 	private Object[] parameter;
-	private int parameterLength;
-	private String[] clazz;
+	private List<String> clazz;
 	private Map<String, List<Object>> BundleResult;
 	
 	public BundlePresent(){
@@ -48,9 +47,7 @@ public class BundlePresent implements Parcelable{
 		methodName = in.readString();
 		resKey = in.readString();
 		parameter = in.readArray(Object.class.getClassLoader());
-		clazz = new String[in.readInt()];
-		//Log.e("BundlePresent", Integer.toString(clazz.length));
-		in.readStringArray(clazz);
+		clazz = in.readArrayList(List.class.getClassLoader());
 		BundleResult = in.readHashMap(Map.class.getClassLoader());
 	}
 
@@ -67,9 +64,7 @@ public class BundlePresent implements Parcelable{
 		out.writeString(methodName);
 		out.writeString(resKey);
 		out.writeArray(parameter);
-		out.writeInt(parameterLength);
-		clazz = new String[parameterLength];
-		out.writeStringArray(clazz);
+		out.writeList(clazz);
 		out.writeMap(BundleResult);
 	} 
 	
@@ -100,8 +95,6 @@ public class BundlePresent implements Parcelable{
 			for(Object res : result){
 				resultList.add(res);
 			}
-			//System.out.println("!!" + resKey);
-			//Log.e("BundlePresent", Integer.toString(resultList.size()));
 			BundleResult.put(resKey, resultList);
 		}
 	}
@@ -116,14 +109,13 @@ public class BundlePresent implements Parcelable{
 	
 	public void setParameters(String path, String bundlePack, 
 			String className, String methodName, String resKey, Object[] parameter, 
-			String[] clazz){
+			ArrayList<String> clazz){
 		this.path = path;
 		this.bundlePack = bundlePack;
 		this.className = className;
 		this.methodName = methodName;
 		this.resKey = resKey;
 		this.parameter = parameter;
-		this.parameterLength = clazz.length;
 		this.clazz = clazz;
 	}
 
@@ -147,7 +139,7 @@ public class BundlePresent implements Parcelable{
 		return parameter;
 	}
 
-	public String[] getClazz() {
+	public List<String> getClazz() {
 		return clazz;
 	}
 

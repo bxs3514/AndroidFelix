@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -61,7 +60,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private ListView BundleList;
 	private EditText Command;
-	//private TextView SystemInfo;
 	private Button ConfirmBtn;
 	private Button ResetBtn;
 	private Button RefreshBtn;
@@ -209,9 +207,9 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
+		/** Handle action bar item clicks here. The action bar will
+		automatically handle clicks on the Home/Up button, so long
+		as you specify a parent activity in AndroidManifest.xml.*/
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
@@ -229,8 +227,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				try{
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
-						
-						//Refresh();
 						refreshThread.start();
 					}
 				}catch (RemoteException re){
@@ -241,15 +237,17 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
 				
-				Toast.makeText(AFelixActivity.this, "Service has unexpected disconnected", Toast.LENGTH_LONG).show();
+				Toast.makeText(AFelixActivity.this, "Android Felix Service has disconnected", 
+						Toast.LENGTH_LONG).show();
 				mAFelixService = null;
 			}
 			
 		};
 	}
 	
-	//Change a implicit intent to a explicit one
+	
 	private Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
+		//Change a implicit intent to a explicit one
         // Retrieve all services that can match the given intent
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
@@ -275,6 +273,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
     }
 	
 	private void initViews(){
+		//Init views
 		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall"};
 		bundleInstallList = new ArrayList<String>();
 		afDbCtrl = new DatabaseControler(getApplicationContext());
