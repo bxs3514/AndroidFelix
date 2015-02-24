@@ -27,5 +27,7 @@ public interface BundleControler {
 	public ArrayList<String> BundleInfo(int command);
 	public BundlePresent execute(Context context, BundlePresent mBundle, 
 			String path, String bundlePack, String className, String methodName, 
-			String resKey, Object[] parameters, Class<?>...clazz) ;
+			String resKey, Object[] parameters, Class<?>...clazz);
+	public BundlePresent execute(BundlePresent mBundle, String methodName, 
+			String resKey, Object[] parameters, Class<?>...clazz);
 }

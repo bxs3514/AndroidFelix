@@ -64,10 +64,6 @@ public class ConsoleInterpreter{
 			}
 			return res;
 		}
-		else if(cwords[0].equals("su")){
-			fc.setSu(true);
-			return "Root.";
-		}
 		else if(cwords[0].equals("start") || cwords[0].equals("stop")
 				|| cwords[0].equals("uninstall") || cwords[0].equals("update")
 				|| cwords[0].equals("restart")){
@@ -134,6 +130,19 @@ public class ConsoleInterpreter{
 				e.getStackTrace();
 				return "Wrong command!";
 			}
+		}
+		else if(cwords[0].equals("path")){
+			this.setDefaultPath(Environment.getExternalStorageDirectory().getPath()
+					+ cwords[1]);
+			return "switch bundle path to /sdcard" + cwords[1];
+		}
+		else if(cwords[0].equals("su")){
+			fc.setSu(true);
+			return "Root.";
+		}
+		else if(cwords[0].equals("exit")){
+			fc.setSu(false);
+			return "Unroot.";
 		}
 		else{
 			Log.e(TAG, "Wrong command!");

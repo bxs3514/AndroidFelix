@@ -27,7 +27,6 @@ interface IAFelixService{
 	List<String> getAll();
 	int getBundleId(String bundle);
 	BundlePresent executeBundle(inout BundlePresent bundle);
-	BundlePresent executeExistBundle(inout BundlePresent bundle);
 	BundlePresent getBundlesContainer(String bundle);
 	String dependency(String bundle);
 	boolean interpret(String command);

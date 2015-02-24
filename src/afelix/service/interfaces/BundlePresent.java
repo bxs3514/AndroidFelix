@@ -147,6 +147,35 @@ public class BundlePresent implements Parcelable{
 		return resKey;
 	}
 
+	
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public void setBundlePack(String bundlePack) {
+		this.bundlePack = bundlePack;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public void setMethodName(String methodName) {
+		this.methodName = methodName;
+	}
+
+	public void setResKey(String resKey) {
+		this.resKey = resKey;
+	}
+
+	public void setParameter(Object[] parameter) {
+		this.parameter = parameter;
+	}
+
+	public void setClazz(List<String> clazz) {
+		this.clazz = clazz;
+	}
+
 	public static Parcelable.Creator<BundlePresent> getCreator() {
 		return CREATOR;
 	}

@@ -231,18 +231,7 @@ public class AFelixAidlService extends Service{
 		@Override
 		public BundlePresent executeBundle(BundlePresent bundle)
 				throws RemoteException {
-			List<String> tempClazz = bundle.getClazz();
-			Class<?>[] classArray = new Class<?>[tempClazz.size()];
-			int i = 0;
-			for(Iterator<String> iterator = tempClazz.iterator(); iterator.hasNext();){
-				try {
-					classArray[i] = Class.forName(iterator.next());
-					i++;
-				} catch (ClassNotFoundException e) {
-					Log.e(TAG, "Get Class Fail for: " + e.toString());
-					e.printStackTrace();
-				}
-			}
+			Class<?>[] classArray = classListToArray(bundle.getClazz());
 			
 			bp = bundle;
 			return fc.execute(getApplicationContext(), bundle,
@@ -253,6 +242,41 @@ public class AFelixAidlService extends Service{
 					bundle.getParameter(), 
 					classArray);
 		}
+
+		@Override
+		public BundlePresent executeExistBundle(BundlePresent bundle)
+				throws RemoteException {
+			Class<?>[] classArray = classListToArray(bundle.getClazz());
+			bp = bundle;
+			return fc.execute(bundle, bundle.getMethodName(), 
+					bundle.getResKey(), bundle.getParameter(), classArray);
+		}
 	};
 	
+	private Class<?>[] classListToArray(List<String> classList){
+		Class<?>[] classArray = new Class<?>[classList.size()];
+		int i = 0;
+		for(Iterator<String> iterator = classList.iterator(); iterator.hasNext();){
+			String tempClazz = iterator.next();
+			try {
+				classArray[i] = Class.forName(tempClazz);
+			} catch (ClassNotFoundException e) {
+				if(tempClazz.equals("boolean")) classArray[i] = boolean.class;
+				else if(tempClazz.equals("byte")) classArray[i] = byte.class;
+				else if(tempClazz.equals("short")) classArray[i] = short.class;
+				else if(tempClazz.equals("int")) classArray[i] = int.class;
+				else if(tempClazz.equals("long")) classArray[i] = long.class;
+				else if(tempClazz.equals("float")) classArray[i] = float.class;
+				else if(tempClazz.equals("double")) classArray[i] = double.class;
+				else if(tempClazz.equals("char")) classArray[i] = char.class;
+				else{
+					Log.e(TAG, "Get Class Fail for: " + e.toString());
+					e.printStackTrace();
+				}
+			} finally{
+				i++;
+			}
+		}
+		return classArray;
+	}
 }

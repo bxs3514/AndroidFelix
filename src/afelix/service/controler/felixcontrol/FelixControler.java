@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -39,6 +37,9 @@ public class FelixControler implements BundleControler{
 	private Bundle resBundle;
 	private BundlePresent resBundlePresent;
 	private ConsoleInterpreter mInterpreter;
+	private Class<?> loadedClass;
+	private ServiceReference<?> ref;
+	private Object serviceInstance;
 	
 	private String res = new String();
 	private boolean su = false;
@@ -129,8 +130,9 @@ public class FelixControler implements BundleControler{
 		case 2://install bundle
 			FileInputStream bs = null;
 			if(location == null){
-				location = Environment.getExternalStorageDirectory().getPath() + 
-						File.separator + "AFelixData" + File.separator + "Bundle";
+				//location = Environment.getExternalStorageDirectory().getPath() + 
+						//File.separator + "AFelixData" + File.separator + "Bundle";
+				location = mInterpreter.getDefaultPath();
 			}
 			try{
 				Log.d(TAG, "Get bundle at: " + location);
@@ -236,6 +238,7 @@ public class FelixControler implements BundleControler{
 		            return "Bundle: " + bundle + " has started successfully";
 		        } catch (BundleException be) {
 		        	System.out.println(be.toString());
+		        	be.getStackTrace();
 		        	return "Unable to start Bundle: " + bundle + " for\n" + be.toString();
 		        }
 	        case 48:
@@ -391,16 +394,16 @@ public class FelixControler implements BundleControler{
 						tempFile.getAbsolutePath(), dexFile.getAbsolutePath(),
 						null, context.getApplicationContext().getClassLoader());
 				
-				Class<?> loadedClass = classLoader.loadClass(className);
+				loadedClass = classLoader.loadClass(className);
 
-				ServiceReference<?> ref = mBundlecontext.getServiceReference(
+				ref = mBundlecontext.getServiceReference(
 						loadedClass.getName());
 				if(ref != null){
 					loadedClass = mBundlecontext.getService(ref).getClass();
-					Object obj = (Object)mBundlecontext.getService(ref);
+					serviceInstance = (Object)mBundlecontext.getService(ref);
 					
 					Method m = loadedClass.getMethod(mBundle.getMethodName(), clazz);
-					mBundle.setBundleResult(resKey, m.invoke(obj, parameters));
+					mBundle.setBundleResult(resKey, m.invoke(serviceInstance, parameters));
 				}
 				else{
 					Log.e(TAG, "Null serveice!!!");
@@ -413,6 +416,18 @@ public class FelixControler implements BundleControler{
 			e.printStackTrace();
 		}
 		
+		return mBundle;
+	}
+
+	@Override
+	public BundlePresent execute(BundlePresent mBundle, String methodName,
+			String resKey, Object[] parameters, Class<?>... clazz) {
+		try {
+			Method m = loadedClass.getMethod(mBundle.getMethodName(), clazz);
+			mBundle.setBundleResult(resKey, m.invoke(serviceInstance, parameters));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return mBundle;
 	}
 }

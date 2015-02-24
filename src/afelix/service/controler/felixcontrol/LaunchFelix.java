@@ -13,11 +13,11 @@ package afelix.service.controler.felixcontrol;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.felix.framework.Felix;
-import org.osgi.framework.BundleException;
 
 import android.util.Log;
 
@@ -45,7 +45,7 @@ public class LaunchFelix {
 			configMap = new HashMap<String, String>();
 			configMap.put("org.osgi.framework.storage", cacheDir);
 	        configMap.put("felix.embedded.execution", "true");
-	        configMap.put("org.osgi.service.http.port", "9990");
+	        //configMap.put("org.osgi.service.http.port", "8080");
 	        configMap.put("org.osgi.framework.startlevel.beginning", "5");
 		}catch(Exception e){
 			Log.e(TAG,"Config fail:"+e.toString());
