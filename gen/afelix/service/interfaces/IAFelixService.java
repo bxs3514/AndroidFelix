@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: G:\\Dropbox\\Graduate Design\\AndroidFelix\\src\\afelix\\service\\interfaces\\IAFelixService.aidl
+ * Original file: /Users/zlab/Dropbox/Graduate Design/AndroidFelix/src/afelix/service/interfaces/IAFelixService.aidl
  */
 package afelix.service.interfaces;
 public interface IAFelixService extends android.os.IInterface
@@ -118,6 +118,26 @@ data.enforceInterface(DESCRIPTOR);
 java.lang.String _arg0;
 _arg0 = data.readString();
 this.updateBundle(_arg0);
+reply.writeNoException();
+return true;
+}
+case TRANSACTION_sendBundle:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+this.sendBundle(_arg0);
+reply.writeNoException();
+return true;
+}
+case TRANSACTION_sendBundleOnPosition:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+java.lang.String _arg1;
+_arg1 = data.readString();
+this.sendBundleOnPosition(_arg0, _arg1);
 reply.writeNoException();
 return true;
 }
@@ -383,6 +403,37 @@ _reply.recycle();
 _data.recycle();
 }
 }
+@Override public void sendBundle(java.lang.String bundle) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(bundle);
+mRemote.transact(Stub.TRANSACTION_sendBundle, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
+@Override public void sendBundleOnPosition(java.lang.String position, java.lang.String bundle) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(position);
+_data.writeString(bundle);
+mRemote.transact(Stub.TRANSACTION_sendBundleOnPosition, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
 @Override public java.util.List<java.lang.String> getAll() throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
@@ -551,13 +602,15 @@ static final int TRANSACTION_startBundle = (android.os.IBinder.FIRST_CALL_TRANSA
 static final int TRANSACTION_stopBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
 static final int TRANSACTION_resteartBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
 static final int TRANSACTION_updateBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
-static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
-static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 10);
-static final int TRANSACTION_executeBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 11);
-static final int TRANSACTION_executeExistBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 12);
-static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 13);
-static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 14);
-static final int TRANSACTION_interpret = (android.os.IBinder.FIRST_CALL_TRANSACTION + 15);
+static final int TRANSACTION_sendBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
+static final int TRANSACTION_sendBundleOnPosition = (android.os.IBinder.FIRST_CALL_TRANSACTION + 10);
+static final int TRANSACTION_getAll = (android.os.IBinder.FIRST_CALL_TRANSACTION + 11);
+static final int TRANSACTION_getBundleId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 12);
+static final int TRANSACTION_executeBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 13);
+static final int TRANSACTION_executeExistBundle = (android.os.IBinder.FIRST_CALL_TRANSACTION + 14);
+static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 15);
+static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 16);
+static final int TRANSACTION_interpret = (android.os.IBinder.FIRST_CALL_TRANSACTION + 17);
 }
 public void startFelix() throws android.os.RemoteException;
 public void stopFelix() throws android.os.RemoteException;
@@ -568,6 +621,8 @@ public void startBundle(java.lang.String bundle) throws android.os.RemoteExcepti
 public void stopBundle(java.lang.String bundle) throws android.os.RemoteException;
 public void resteartBundle(java.lang.String bundle) throws android.os.RemoteException;
 public void updateBundle(java.lang.String bundle) throws android.os.RemoteException;
+public void sendBundle(java.lang.String bundle) throws android.os.RemoteException;
+public void sendBundleOnPosition(java.lang.String position, java.lang.String bundle) throws android.os.RemoteException;
 public java.util.List<java.lang.String> getAll() throws android.os.RemoteException;
 public int getBundleId(java.lang.String bundle) throws android.os.RemoteException;
 public afelix.service.interfaces.BundlePresent executeBundle(afelix.service.interfaces.BundlePresent bundle) throws android.os.RemoteException;

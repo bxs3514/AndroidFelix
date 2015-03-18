@@ -24,6 +24,7 @@ import afelix.service.controler.felixcontrol.FelixControler;
 import afelix.service.controler.felixcontrol.LaunchFelix;
 import afelix.service.interfaces.BundlePresent;
 import afelix.service.interfaces.IAFelixService;
+import afelix.service.net.SocketTransfer;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -48,6 +49,8 @@ public class AFelixAidlService extends Service{
 	
 	private TextView LogInfo;
 	private String res = new String();
+	
+	private SocketTransfer mTrans;
 	//private ArrayList<String> info = null;
 	
 	@Override
@@ -59,6 +62,8 @@ public class AFelixAidlService extends Service{
 		main_felix_framework = launchFelix.Launch();
 		fc = new FelixControler(main_felix_framework);
 		bp = new BundlePresent();
+		
+		mTrans = new SocketTransfer("192.168.100.10", 6666);
 		
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.activity_afelix, null);//Get the layout view
@@ -251,6 +256,18 @@ public class AFelixAidlService extends Service{
 			return fc.execute(bundle, bundle.getMethodName(), 
 					bundle.getResKey(), bundle.getParameter(), classArray);
 		}
+
+		@Override
+		public void sendBundle(String bundle) throws RemoteException {
+			mTrans.sendBundle(null, bundle);
+		}
+
+		@Override
+		public void sendBundleOnPosition(String position, String bundle)
+				throws RemoteException {
+			mTrans.sendBundle(position, bundle);
+			
+		}
 	};
 	
 	private Class<?>[] classListToArray(List<String> classList){
@@ -279,4 +296,14 @@ public class AFelixAidlService extends Service{
 		}
 		return classArray;
 	}
+
+	public SocketTransfer getmTrans() {
+		return mTrans;
+	}
+
+	public void setmTrans(SocketTransfer mTrans) {
+		this.mTrans = mTrans;
+	}
+	
+	
 }

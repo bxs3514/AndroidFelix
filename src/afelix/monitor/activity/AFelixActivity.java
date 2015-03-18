@@ -21,6 +21,7 @@ import afelix.afelixservice.androidfelix.R;
 import afelix.service.controler.database.BundleDataCenter;
 import afelix.service.controler.database.DatabaseControler;
 import afelix.service.interfaces.IAFelixService;
+import afelix.service.net.SocketTransfer;
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -274,7 +275,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private void initViews(){
 		//Init views
-		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall"};
+		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall", "Send"};
 		bundleInstallList = new ArrayList<String>();
 		afDbCtrl = new DatabaseControler(getApplicationContext());
 		ArrayList<String> as = new ArrayList<String>();
@@ -347,7 +348,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 								mAFelixService.interpret("uninstall " + bundleId);
 								refresh.run();
 							} catch (RemoteException e) {
-								
+								e.printStackTrace();
+							}
+							break;
+						case 5:
+							try {
+								mAFelixService.sendBundle("Remote-1.0.0.RC4.jar");//!
+							} catch (RemoteException e) {
 								e.printStackTrace();
 							}
 							break;

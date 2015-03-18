@@ -48,31 +48,31 @@ private static final String TAG = "DataControler";
 	@Override
 	public void addTable(String table, ArrayList<String> column,
 			HashMap<String, String> type) {
-		// TODO Auto-generated method stub
+		
 		setTable(table, column, type, MODE.ADD);
 	}
 
 	@Override
 	public void dropTable(String table) {
-		// TODO Auto-generated method stub
+		
 		setTable(table, null, null, MODE.DROP);
 	}
 
 	@Override
 	public void Insert(String table, ArrayList<String> columnElements) {
-		// TODO Auto-generated method stub
+		
 		setTable(table, columnElements, null, MODE.INSERT);
 	}
 
 	@Override
 	public void Delete(String table, ArrayList<String> factor) {
-		// TODO Auto-generated method stub
+		
 		setTable(table, factor, null, MODE.DELETE);
 	}
 
 	@Override
 	public void Replace(String table, ArrayList<String> columnElements) {
-		// TODO Auto-generated method stub
+		
 		setTable(table, columnElements, null, MODE.REPLACE);
 	}
 	
@@ -126,7 +126,7 @@ private static final String TAG = "DataControler";
 						column.toArray(new String[column.size()]));
 				
 			}catch(SQLiteException se){
-				Log.e(TAG, "Can't insert for " + se.toString(), se);
+				//Log.e(TAG, "Can't insert for " + se.toString(), se);
 				//Toast.makeText(this, "Can't find the table to insert.", Toast.LENGTH_LONG).show();
 			}
 			break;

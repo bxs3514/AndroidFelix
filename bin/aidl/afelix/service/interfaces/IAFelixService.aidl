@@ -24,6 +24,8 @@ interface IAFelixService{
 	void stopBundle(String bundle);
 	void resteartBundle(String bundle);
 	void updateBundle(String bundle);
+	void sendBundle(String bundle);
+	void sendBundleOnPosition(String position, String bundle);
 	List<String> getAll();
 	int getBundleId(String bundle);
 	BundlePresent executeBundle(inout BundlePresent bundle);
