@@ -179,7 +179,7 @@ private static final String TAG = "DataControler";
 				else wholeSelect += select[i] + ",";
 			}
 			
-			if(where == null)
+			if(where != null)
 				DATABASE_QUERY = "select " + wholeSelect + " from " + table + " where " + where;
 			else
 				DATABASE_QUERY = "select " + wholeSelect + " from " + table;
@@ -218,6 +218,10 @@ private static final String TAG = "DataControler";
 		}
 
 		cursor.close();
+	}
+	
+	public void clearQuery(){
+		queryRes.clear();
 	}
 	
 	public void closeDatabase(){

@@ -74,6 +74,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	private ArrayList<String> as;
 	private ArrayAdapter<String> mArrayAdapter;
 	private HashMap<Integer, String> installBundleMap;
+	private HashMap<String, Integer> bundleIdMap;
 	private String[] bundles;
 	private String[] operations;
 	private String commandStore;
@@ -157,6 +158,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					try {
 						if((String)temp.getValue() != null && !((String)temp.getValue()).equals(""))
 							mAFelixService.installBundleByLocation(((String)temp.getValue()).split("\\s+")[1], null);
+							bundleIdMap.put(((String)temp.getValue()).split("\\s+")[1], 
+									Integer.valueOf(((String)temp.getValue()).split("\\s+")[0]));
 							//mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
 					} catch (RemoteException e) {
 						e.printStackTrace();
@@ -277,11 +280,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		//Init views
 		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall", "Send"};
 		bundleInstallList = new ArrayList<String>();
+		bundleIdMap = new HashMap<String, Integer>();
 		afDbCtrl = new DatabaseControler(getApplicationContext());
 		ArrayList<String> as = new ArrayList<String>();
 		as.add(getApplicationContext().getPackageManager()
 				.getApplicationLabel(getApplicationContext().getApplicationInfo()).toString());
 		afDbCtrl.Insert("App", as);
+		as.clear();
 		
 		BundleList = (ListView)findViewById(R.id.bundleList);
 		BundleList.setOnItemClickListener(new OnItemClickListener(){
@@ -353,7 +358,9 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 							break;
 						case 5:
 							try {
-								mAFelixService.sendBundle("Remote-1.0.0.RC4.jar");//!
+								mAFelixService.sendBundle(afDbCtrl.Query(new String[]{"FileName"}, 
+										"File", "Bundle=\"" + (bundle.split("\\s+"))[1] + "\"").get(0).entrySet().iterator().next().getValue());
+								afDbCtrl.clearQuery();
 							} catch (RemoteException e) {
 								e.printStackTrace();
 							}

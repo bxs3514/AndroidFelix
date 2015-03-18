@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -24,6 +26,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 
 import dalvik.system.DexClassLoader;
+import afelix.service.controler.database.DatabaseControler;
 import afelix.service.interfaces.BundlePresent;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -41,12 +44,16 @@ public class FelixControler implements BundleControler{
 	private ServiceReference<?> ref;
 	private Object serviceInstance;
 	
+	private DatabaseControler mDbCtrl;
+	
 	private String res = new String();
 	private boolean su = false;
 	
-	public FelixControler(Felix felixFramework){
+	public FelixControler(Felix felixFramework, Context context){
 		this.felixFramework = felixFramework;
 		this.mInterpreter = new ConsoleInterpreter(this);
+		
+		mDbCtrl = new DatabaseControler(context);
 	}
 	
 	@Override
@@ -124,8 +131,8 @@ public class FelixControler implements BundleControler{
 	}
 	
 	private String MainControler(String bundle, String location, int command){
-		
 		//Main command execution block
+		
 		switch(command){
 		case 2://install bundle
 			FileInputStream bs = null;
@@ -138,7 +145,7 @@ public class FelixControler implements BundleControler{
 				Log.d(TAG, "Get bundle at: " + location);
 				File f = null;
 					
-				//Escaping when users forget to input '/'
+				//Escaping when users forget to input file separator
 				if(location.charAt(location.length()-1) == File.separatorChar)
 					f = new File(location + bundle);
 				else f = new File(location + File.separatorChar + bundle);
@@ -148,9 +155,18 @@ public class FelixControler implements BundleControler{
 				Log.e(TAG, "File open fail for " + ie.toString(), ie);
 				return "File open failed.";
 			}
-				
+			
 			try{
-				this.felixFramework.getBundleContext().installBundle(bundle, bs);
+				org.osgi.framework.Bundle mBundle = this.felixFramework.getBundleContext().installBundle(bundle, bs);
+				ArrayList<String> as = new ArrayList<String>();
+				as.add(mBundle.getSymbolicName());
+				as.add(bundle);
+				this.mDbCtrl.Insert("File", as);
+				//new Thread(){
+					//public void run(){
+						//this.mDbCtrl.Insert("File", new ArrayList<String>(Arrays.asList(mBundle, bundle)));
+					//}
+				//}.start();
 			}catch(BundleException be){
 				Log.e(TAG, "Bundle "+ bundle + "installed fail for " + be.toString(), be);
 				return "Bundle "+ bundle + "installed fail for " + be.toString();
@@ -162,7 +178,7 @@ public class FelixControler implements BundleControler{
 				Log.e(TAG, "Close the inputstream fail for " + ie.toString(), ie);
 				return "Fail to close the file.";
 			}
-				
+			
 			return "Bundle:" + bundle + " has installed successfully";
 		case 0://find bundle
 		case 1://uninstall a bundle

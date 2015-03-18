@@ -12,8 +12,16 @@ CREATE TABLE `Bundle` (
 );
 
 CREATE TABLE `Dependency` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`AppId`	INTEGER,
 	`BundleId`	INTEGER,
 	FOREIGN KEY('AppId') REFERENCES App('id')
 	FOREIGN KEY('BundleId') REFERENCES Bundle('id')
+);
+
+CREATE TABLE `File` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`Bundle`  TEXT,
+	`FileName`  TEXT,
+	FOREIGN KEY('Bundle') REFERENCES Bundle('Name')
 );
