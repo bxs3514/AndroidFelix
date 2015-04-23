@@ -124,47 +124,6 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		}
 	}
 	
-	private void initControl(){
-		dbCtrl = new DatabaseControler(getApplicationContext());
-		//afHelper = new AFelixSQLiteHelper(getApplicationContext());
-		
-		//Toast.makeText(this, String.valueOf(afHelper.a), Toast.LENGTH_LONG).show();
-		
-	    info = (TextView)findViewById(R.id.bundle_select_number);
-		
-	    allBundlesList = (ListView)findViewById(R.id.all_bundle_list);
-		allBundlesList.setOnItemClickListener(new OnItemClickListener(){
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-
-				String bundle = (String)parent.getItemAtPosition(position);
-				if(selectedBundles.get(position) == null || selectedBundles.get(position).equals("")){
-					//Toast.makeText(BundleDataCenter.this, 
-							//"The bundle: " + bundle + " is selected.", Toast.LENGTH_SHORT).show();
-					
-					selectedBundles.put(position, bundle);
-					selectNumber++;
-				}else{
-					//Toast.makeText(BundleDataCenter.this, 
-							//"The bundle: " + (bundle.split("\\s+"))[1] + " is deselected.", Toast.LENGTH_SHORT).show();
-					selectedBundles.put(position, "");
-					selectNumber--;
-				}
-				info.setText("Selected number: " + selectNumber
-						+ "\nTotal bundles: " + selectedBundles.size());
-			}
-			
-		});
-		
-		installBundleBtn = (Button)findViewById(R.id.install);
-		installBundleBtn.setOnClickListener(this);
-		//fileSystemBtn = (Button)findViewById(R.id.select_all);
-		//fileSystemBtn.setOnClickListener(this);
-	}
-	
 	private void initData(){
 		
 		initControl();
@@ -197,7 +156,6 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 			
 		}
 		
-		allBundles = dbCtrl.Query(null, "Bundle", null);
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		//if(allBundles != null)
 			//info.setText(allBundles.get(1).get("Name"));
@@ -220,6 +178,50 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 				tempBundleInfo.toArray(new String[tempBundleInfo.size()]));
 		allBundlesList.setAdapter(mArrayAdapter);
 		allBundlesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		
 	}
+	
+	private void initControl(){
+		dbCtrl = new DatabaseControler(getApplicationContext());
+		allBundles = dbCtrl.Query(null, "Bundle", null);
 
+	    info = (TextView)findViewById(R.id.bundle_select_number);
+		info.setText("Selected number: 0 \nTotal bundles: " + allBundles.size());
+		//afHelper = new AFelixSQLiteHelper(getApplicationContext());
+		
+		//Toast.makeText(this, String.valueOf(afHelper.a), Toast.LENGTH_LONG).show();
+		
+	    allBundlesList = (ListView)findViewById(R.id.all_bundle_list);
+		allBundlesList.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+
+				String bundle = (String)parent.getItemAtPosition(position);
+				if(selectedBundles.get(position) == null || selectedBundles.get(position).equals("")){
+					//Toast.makeText(BundleDataCenter.this, 
+							//"The bundle: " + bundle + " is selected.", Toast.LENGTH_SHORT).show();
+					
+					selectedBundles.put(position, bundle);
+					selectNumber++;
+				}else{
+					//Toast.makeText(BundleDataCenter.this, 
+							//"The bundle: " + (bundle.split("\\s+"))[1] + " is deselected.", Toast.LENGTH_SHORT).show();
+					selectedBundles.remove(position);
+					selectNumber--;
+				}
+				info.setText("Selected number: " + selectNumber
+						+ "\nTotal bundles: " + allBundles.size());
+			}
+			
+		});
+		
+		installBundleBtn = (Button)findViewById(R.id.install);
+		installBundleBtn.setOnClickListener(this);
+		//fileSystemBtn = (Button)findViewById(R.id.select_all);
+		//fileSystemBtn.setOnClickListener(this);
+	}
+	
 }

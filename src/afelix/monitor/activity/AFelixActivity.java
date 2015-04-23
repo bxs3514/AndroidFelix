@@ -156,10 +156,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 					Map.Entry temp = (Map.Entry)i.next();
 					bundleInstallList.add((String)temp.getValue());
 					try {
-						if((String)temp.getValue() != null && !((String)temp.getValue()).equals(""))
-							mAFelixService.installBundleByLocation(((String)temp.getValue()).split("\\s+")[1], null);
-							bundleIdMap.put(((String)temp.getValue()).split("\\s+")[1], 
-									Integer.valueOf(((String)temp.getValue()).split("\\s+")[0]));
+						if((String)temp.getValue() != null && !((String)temp.getValue()).equals("")){
+							String bundleName = ((String)temp.getValue()).substring(
+									((String)temp.getValue()).length() 
+									- ((String)temp.getValue()).split("\\s+")[1].length());
+							mAFelixService.installBundleByLocation(bundleName, null);
+							bundleIdMap.put(bundleName, Integer.valueOf(((String)temp.getValue()).split("\\s+")[0]));
+						}
 							//mAFelixService.interpret("install " + ((String)temp.getValue()).split("\\s+")[1]);
 					} catch (RemoteException e) {
 						e.printStackTrace();

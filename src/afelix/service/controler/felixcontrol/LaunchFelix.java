@@ -5,7 +5,7 @@
  *
  * This is a android felix launcher.
  *
- * @lastEdit 11/18/2014
+ * @lastEdit 04/03/2015
  * 
  */
 
@@ -46,7 +46,10 @@ public class LaunchFelix {
 			configMap.put("org.osgi.framework.storage", cacheDir);
 	        configMap.put("felix.embedded.execution", "true");
 	        //configMap.put("org.osgi.service.http.port", "8080");
+	        configMap.put("org.osgi.framework.storage.clean", "onFirstInit");
 	        configMap.put("org.osgi.framework.startlevel.beginning", "5");
+	        configMap.put("org.osgi.framework.bundle.parent", "ext"); //change class loader to extension class loader
+	        configMap.put("service.exported.interfaces", "*");
 		}catch(Exception e){
 			Log.e(TAG,"Config fail:"+e.toString());
 		}

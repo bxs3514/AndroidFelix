@@ -1,7 +1,9 @@
 package afelix.service.net;
 
+import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -55,17 +57,17 @@ public class SocketTransfer {
 				 try{
 				 mSocket = new Socket(ip, port);  //connect to server
 				 
-                 //FileInputStream fis = new FileInputStream(myFile);
-                 //BufferedInputStream bis = new BufferedInputStream(fis);
-                 //bis.read(mybytearray,0,mybytearray.length);
+                 FileInputStream fis = new FileInputStream(myFile);
+                 BufferedInputStream bis = new BufferedInputStream(fis);
+                 bis.read(mybytearray,0,mybytearray.length);
                  //BufferedOutputStream out = new BufferedOutputStream(os);
                  OutputStream os = mSocket.getOutputStream();
                  DataOutputStream d = new DataOutputStream(os);
                  System.out.println("Sending...");
                  d.writeUTF(myFile.getName());
                  d.flush();
-                 d.writeLong(myFile.length());
-                 d.flush();
+                 //d.writeLong(myFile.length());
+                 //d.flush();
                  d.write(mybytearray,0,mybytearray.length);
                  d.flush();
 				 d.close();

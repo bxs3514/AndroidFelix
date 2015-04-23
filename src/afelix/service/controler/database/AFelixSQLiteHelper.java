@@ -10,12 +10,8 @@
 
 package afelix.service.controler.database;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.Scanner;
-
 import org.apache.commons.io.IOUtils;
 
 import android.content.Context;

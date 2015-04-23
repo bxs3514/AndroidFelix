@@ -63,7 +63,7 @@ public class AFelixAidlService extends Service{
 		fc = new FelixControler(main_felix_framework, getApplicationContext());
 		bp = new BundlePresent();
 		
-		mTrans = new SocketTransfer("192.168.100.2", 6666);
+		mTrans = new SocketTransfer("192.168.1.100", 8888);
 		
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.activity_afelix, null);//Get the layout view
