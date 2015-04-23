@@ -1650,15 +1650,16 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f090031;
         public static final int action_mode_bar_stub=0x7f090030;
         public static final int action_mode_close_button=0x7f090023;
-        public static final int action_settings=0x7f09004f;
+        public static final int action_settings=0x7f09004e;
         public static final int activity_chooser_view_content=0x7f090024;
-        public static final int all_bundle_list=0x7f09004e;
+        public static final int all_bundle_list=0x7f09004d;
         public static final int all_bundles_title=0x7f090049;
         public static final int always=0x7f090015;
         public static final int beginning=0x7f09001c;
         public static final int bottom=0x7f09001f;
         public static final int bundleList=0x7f090047;
-        public static final int bundle_select_number=0x7f09004d;
+        public static final int bundle_select_number=0x7f09004c;
+        public static final int bundle_title=0x7f09004b;
         public static final int checkbox=0x7f09002c;
         public static final int collapseActionView=0x7f090016;
         public static final int command=0x7f090042;
@@ -1708,8 +1709,6 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090004;
         public static final int submit_area=0x7f09003f;
         public static final int tabMode=0x7f09000d;
-        public static final int textView1=0x7f09004b;
-        public static final int textView2=0x7f09004c;
         public static final int title=0x7f09002a;
         public static final int top=0x7f090020;
         public static final int up=0x7f090001;
@@ -1833,6 +1832,8 @@ containing a value of this type.
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000d;
         public static final int action_settings=0x7f0a0011;
         public static final int app_name=0x7f0a000f;
+        public static final int bundle_list_bundle_title=0x7f0a0014;
+        public static final int bundle_list_location_title=0x7f0a0015;
         public static final int hello_world=0x7f0a0010;
         public static final int title_activity_file_system=0x7f0a0013;
         public static final int title_activity_main=0x7f0a0012;

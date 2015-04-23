@@ -136,13 +136,13 @@ private static final String TAG = "DataControler";
 			break;
 		case UPDATE:
 			n = afHelper.getReadableDatabase().rawQuery("select * from " + table, null).getColumnCount();
-			DATABASE_UPGRADE = "update " + table + " set ";
+			DATABASE_UPGRADE = "replace into " + table + " values(null,";
 			for(int i = 0; i < n - 1; i++){
 				if(i != n - 2)
-					DATABASE_UPGRADE += columnName[i + 1] + " = ?, ";
-				else DATABASE_UPGRADE += columnName[i + 1] + " = ? ";
+					DATABASE_UPGRADE += "?, ";
+				else DATABASE_UPGRADE += "?)";
 			}
-			DATABASE_UPGRADE += "where " + columnName[1] + "=" + column.get(0);
+			//DATABASE_UPGRADE += "where " + columnName[1] + "=" + column.get(0);
 			try{
 				afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE,
 						column.toArray(new String[column.size()]));

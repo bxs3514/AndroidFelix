@@ -155,15 +155,13 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 					if(bundleIndex.get(f.getName()) == null){
 						//new Thread(){
 							//public void run(){
-								//Log.e(TAG, String.valueOf(bundleIndex.size()));
 								dbCtrl.Insert("Bundle", as);
 							//}
 						//}.start();
 					}else{
 						//new Thread(){
 							//public void run(){
-								//Log.e(TAG, "Update");
-								//dbCtrl.Update("Bundle", as);
+								dbCtrl.Update("Bundle", as);
 							//}
 						//}.start();
 					}
@@ -176,6 +174,7 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		}else{
 			
 		}
+		allBundles.clear();
 		allBundles = dbCtrl.Query(null, "Bundle", null);
 		info.setText("Selected number: 0 \nTotal bundles: " + allBundles.size());
 		
@@ -189,8 +188,9 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 				//Map.Entry<String, String> bundleInfoEntry = (Map.Entry<String, String>)bundleInfoIt.next();
 			//Toast.makeText(this, "!!!", Toast.LENGTH_LONG).show();
 			//info.append(tempHashMap.get("Name"));
-			tempBundleInfo.add(tempHashMap.get("id") 
-					+ "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tempHashMap.get("Name"));
+			//tempBundleInfo.add(tempHashMap.get("Name") 
+					//+ "\t\t\t\t\t\t\t\t" + tempHashMap.get("Location"));
+			tempBundleInfo.add(tempHashMap.get("Name"));
 			bundleIndex.put(tempHashMap.get("Name"), 1);
 			//Log.e(TAG, String.valueOf(bundleIndex.get(tempHashMap.get("Name"))));
 			//}
@@ -227,7 +227,7 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 					//Toast.makeText(BundleDataCenter.this, 
 							//"The bundle: " + bundle + " is selected.", Toast.LENGTH_SHORT).show();
 					
-					selectedBundles.put(position, bundle);
+					selectedBundles.put(position, position + "\t" + bundle);
 					selectNumber++;
 				}else{
 					//Toast.makeText(BundleDataCenter.this, 

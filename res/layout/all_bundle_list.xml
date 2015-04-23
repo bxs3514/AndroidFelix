@@ -41,23 +41,25 @@
         android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/bundle_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="44dp"
-            android:text="Id"
+            android:text="@string/bundle_list_bundle_title"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+        <!--
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/location_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="Bundle"
+            android:text="@string/bundle_list_location_title"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+        -->
 
     </RelativeLayout>
 

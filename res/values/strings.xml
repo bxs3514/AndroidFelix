@@ -6,5 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_file_system">FileSystemActivity</string>
+    <string name="bundle_list_bundle_title">Bundle</string>
+    <string name="bundle_list_location_title">Location</string>
 
 </resources>
