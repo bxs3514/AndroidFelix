@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 enum MODE{
-	ADD, DROP, DELETE, INSERT, REPLACE
+	ADD, DROP, DELETE, INSERT, UPDATE
 };
 
 
@@ -71,9 +71,9 @@ private static final String TAG = "DataControler";
 	}
 
 	@Override
-	public void Replace(String table, ArrayList<String> columnElements) {
+	public void Update(String table, ArrayList<String> columnElements) {
 		
-		setTable(table, columnElements, null, MODE.REPLACE);
+		setTable(table, columnElements, null, MODE.UPDATE);
 	}
 	
 	private void setTable(String table, ArrayList<String> column, 
@@ -134,21 +134,21 @@ private static final String TAG = "DataControler";
 			DATABASE_UPGRADE = "delete TABLE IF EXISTS " + table;
 			afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE);
 			break;
-		case REPLACE:
+		case UPDATE:
 			n = afHelper.getReadableDatabase().rawQuery("select * from " + table, null).getColumnCount();
-			DATABASE_UPGRADE = "insert or replace into " + table + " values(null,";
+			DATABASE_UPGRADE = "update " + table + " set ";
 			for(int i = 0; i < n - 1; i++){
 				if(i != n - 2)
-					DATABASE_UPGRADE += "?, ";
-				else DATABASE_UPGRADE += "?)";
+					DATABASE_UPGRADE += columnName[i + 1] + " = ?, ";
+				else DATABASE_UPGRADE += columnName[i + 1] + " = ? ";
 			}
-			
+			DATABASE_UPGRADE += "where " + columnName[1] + "=" + column.get(0);
 			try{
 				afHelper.getReadableDatabase().execSQL(DATABASE_UPGRADE,
 						column.toArray(new String[column.size()]));
 				
 			}catch(SQLiteException se){
-				Log.e(TAG, "Can't insert for " + se.toString(), se);
+				Log.e(TAG, "Can't update for " + se.toString(), se);
 				//Toast.makeText(this, "Can't find the table to insert.", Toast.LENGTH_LONG).show();
 			}
 			break;

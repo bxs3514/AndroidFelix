@@ -44,6 +44,7 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 	private ArrayList<HashMap<String, String>> allBundles;
 	private ArrayList<String> bundleLocation;
 	private ArrayList installBundles;
+	private HashMap<String, Integer> bundleIndex;
 	private HashMap<Integer, String> selectedBundles;
 	private int selectNumber;
 	private int totalNumber;
@@ -128,7 +129,7 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		
 		initControl();
 		
-		ArrayList<String> as = new ArrayList<String>();
+		
 		for(int i = 0; i < selectedBundles.size(); i++){
 			selectedBundles.put(i, "");
 		}
@@ -136,6 +137,11 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		mFileControler = new FileControler(bundleLocation.get(0));
 		ArrayList<String> tempBundleInfo = new ArrayList<String>();
 		
+		bundleIndex = new HashMap<String, Integer>();
+		allBundles = dbCtrl.Query(null, "Bundle", null);
+		for(Iterator<HashMap<String, String>> bundleIt = allBundles.iterator(); bundleIt.hasNext(); ){
+			bundleIndex.put(bundleIt.next().get("Name"), 1);
+		}
 		
 		if(bundleLocation.size() > 0){//The same!!!
 			String tempBundleLocation = mFileControler.getLocation();
@@ -143,9 +149,24 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 			//Toast.makeText(this, tempBundleLocation, Toast.LENGTH_LONG).show();
 			if(bundleFiles != null){
 				for(File f : bundleFiles){
+					final ArrayList<String> as = new ArrayList<String>();
 					as.add(f.getName());
 					as.add(f.getParent());
-					dbCtrl.Insert("Bundle", as);
+					if(bundleIndex.get(f.getName()) == null){
+						//new Thread(){
+							//public void run(){
+								//Log.e(TAG, String.valueOf(bundleIndex.size()));
+								dbCtrl.Insert("Bundle", as);
+							//}
+						//}.start();
+					}else{
+						//new Thread(){
+							//public void run(){
+								//Log.e(TAG, "Update");
+								//dbCtrl.Update("Bundle", as);
+							//}
+						//}.start();
+					}
 					as.clear();
 				}
 			}else{
@@ -155,6 +176,8 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 		}else{
 			
 		}
+		allBundles = dbCtrl.Query(null, "Bundle", null);
+		info.setText("Selected number: 0 \nTotal bundles: " + allBundles.size());
 		
 		HashMap<String, String> tempHashMap = new HashMap<String, String>();
 		//if(allBundles != null)
@@ -168,6 +191,8 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 			//info.append(tempHashMap.get("Name"));
 			tempBundleInfo.add(tempHashMap.get("id") 
 					+ "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tempHashMap.get("Name"));
+			bundleIndex.put(tempHashMap.get("Name"), 1);
+			//Log.e(TAG, String.valueOf(bundleIndex.get(tempHashMap.get("Name"))));
 			//}
 			
 		}
@@ -183,10 +208,8 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 	
 	private void initControl(){
 		dbCtrl = new DatabaseControler(getApplicationContext());
-		allBundles = dbCtrl.Query(null, "Bundle", null);
 
 	    info = (TextView)findViewById(R.id.bundle_select_number);
-		info.setText("Selected number: 0 \nTotal bundles: " + allBundles.size());
 		//afHelper = new AFelixSQLiteHelper(getApplicationContext());
 		
 		//Toast.makeText(this, String.valueOf(afHelper.a), Toast.LENGTH_LONG).show();
