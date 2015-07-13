@@ -41,6 +41,10 @@ import android.widget.AdapterView.OnItemClickListener;
 public class BundleDataCenter extends Activity implements OnClickListener{
 	private static final String TAG = "DataControler";
 	
+	private DatabaseControler dbCtrl;
+	private FileControler mFileControler;
+	private File[] bundleFiles;
+	
 	private ArrayList<HashMap<String, String>> allBundles;
 	private ArrayList<String> bundleLocation;
 	private ArrayList installBundles;
@@ -52,10 +56,7 @@ public class BundleDataCenter extends Activity implements OnClickListener{
 	private ArrayAdapter<String> mArrayAdapter;
 	private ListView allBundlesList;
 	private TextView info;
-	private DatabaseControler dbCtrl;
 	
-	private FileControler mFileControler;
-	private File[] bundleFiles;
 	
 	private Bundle installAndroidBundle;
 	private Intent installIntent;

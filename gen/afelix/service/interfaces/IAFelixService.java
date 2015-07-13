@@ -251,6 +251,57 @@ reply.writeNoException();
 reply.writeInt(((_result)?(1):(0)));
 return true;
 }
+case TRANSACTION_setSocket:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+int _arg1;
+_arg1 = data.readInt();
+this.setSocket(_arg0, _arg1);
+reply.writeNoException();
+return true;
+}
+case TRANSACTION_getSocketIp:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _result = this.getSocketIp();
+reply.writeNoException();
+reply.writeString(_result);
+return true;
+}
+case TRANSACTION_getSocketPort:
+{
+data.enforceInterface(DESCRIPTOR);
+int _result = this.getSocketPort();
+reply.writeNoException();
+reply.writeInt(_result);
+return true;
+}
+case TRANSACTION_networkSpeed:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _result = this.networkSpeed();
+reply.writeNoException();
+reply.writeString(_result);
+return true;
+}
+case TRANSACTION_networkUploadSpeed:
+{
+data.enforceInterface(DESCRIPTOR);
+float _result = this.networkUploadSpeed();
+reply.writeNoException();
+reply.writeFloat(_result);
+return true;
+}
+case TRANSACTION_networkDownloadSpeed:
+{
+data.enforceInterface(DESCRIPTOR);
+float _result = this.networkDownloadSpeed();
+reply.writeNoException();
+reply.writeFloat(_result);
+return true;
+}
 }
 return super.onTransact(code, data, reply, flags);
 }
@@ -592,6 +643,107 @@ _data.recycle();
 }
 return _result;
 }
+@Override public void setSocket(java.lang.String ip, int port) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(ip);
+_data.writeInt(port);
+mRemote.transact(Stub.TRANSACTION_setSocket, _data, _reply, 0);
+_reply.readException();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+}
+@Override public java.lang.String getSocketIp() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+java.lang.String _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_getSocketIp, _data, _reply, 0);
+_reply.readException();
+_result = _reply.readString();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
+@Override public int getSocketPort() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+int _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_getSocketPort, _data, _reply, 0);
+_reply.readException();
+_result = _reply.readInt();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
+@Override public java.lang.String networkSpeed() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+java.lang.String _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_networkSpeed, _data, _reply, 0);
+_reply.readException();
+_result = _reply.readString();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
+@Override public float networkUploadSpeed() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+float _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_networkUploadSpeed, _data, _reply, 0);
+_reply.readException();
+_result = _reply.readFloat();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
+@Override public float networkDownloadSpeed() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+float _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_networkDownloadSpeed, _data, _reply, 0);
+_reply.readException();
+_result = _reply.readFloat();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
 }
 static final int TRANSACTION_startFelix = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
 static final int TRANSACTION_stopFelix = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
@@ -611,6 +763,12 @@ static final int TRANSACTION_executeExistBundle = (android.os.IBinder.FIRST_CALL
 static final int TRANSACTION_getBundlesContainer = (android.os.IBinder.FIRST_CALL_TRANSACTION + 15);
 static final int TRANSACTION_dependency = (android.os.IBinder.FIRST_CALL_TRANSACTION + 16);
 static final int TRANSACTION_interpret = (android.os.IBinder.FIRST_CALL_TRANSACTION + 17);
+static final int TRANSACTION_setSocket = (android.os.IBinder.FIRST_CALL_TRANSACTION + 18);
+static final int TRANSACTION_getSocketIp = (android.os.IBinder.FIRST_CALL_TRANSACTION + 19);
+static final int TRANSACTION_getSocketPort = (android.os.IBinder.FIRST_CALL_TRANSACTION + 20);
+static final int TRANSACTION_networkSpeed = (android.os.IBinder.FIRST_CALL_TRANSACTION + 21);
+static final int TRANSACTION_networkUploadSpeed = (android.os.IBinder.FIRST_CALL_TRANSACTION + 22);
+static final int TRANSACTION_networkDownloadSpeed = (android.os.IBinder.FIRST_CALL_TRANSACTION + 23);
 }
 public void startFelix() throws android.os.RemoteException;
 public void stopFelix() throws android.os.RemoteException;
@@ -630,4 +788,10 @@ public afelix.service.interfaces.BundlePresent executeExistBundle(afelix.service
 public afelix.service.interfaces.BundlePresent getBundlesContainer(java.lang.String bundle) throws android.os.RemoteException;
 public java.lang.String dependency(java.lang.String bundle) throws android.os.RemoteException;
 public boolean interpret(java.lang.String command) throws android.os.RemoteException;
+public void setSocket(java.lang.String ip, int port) throws android.os.RemoteException;
+public java.lang.String getSocketIp() throws android.os.RemoteException;
+public int getSocketPort() throws android.os.RemoteException;
+public java.lang.String networkSpeed() throws android.os.RemoteException;
+public float networkUploadSpeed() throws android.os.RemoteException;
+public float networkDownloadSpeed() throws android.os.RemoteException;
 }

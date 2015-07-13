@@ -15,6 +15,8 @@ package afelix.service.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleException;
@@ -27,6 +29,7 @@ import afelix.service.interfaces.IAFelixService;
 import afelix.service.net.SocketTransfer;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -49,6 +52,7 @@ public class AFelixAidlService extends Service{
 	
 	private TextView LogInfo;
 	private String res = new String();
+	private Handler mHandler = new Handler();
 	
 	private SocketTransfer mTrans;
 	//private ArrayList<String> info = null;
@@ -63,7 +67,7 @@ public class AFelixAidlService extends Service{
 		fc = new FelixControler(main_felix_framework, getApplicationContext());
 		bp = new BundlePresent();
 		
-		mTrans = new SocketTransfer("192.168.1.100", 8888);
+		mTrans = new SocketTransfer("192.168.1.108", 8888);
 		
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.activity_afelix, null);//Get the layout view
@@ -218,7 +222,7 @@ public class AFelixAidlService extends Service{
 		
 		@Override
 		public String dependency(String bundle) throws RemoteException {
-			
+			fc.dependency(bundle);
 			return null;
 		}
 
@@ -268,8 +272,54 @@ public class AFelixAidlService extends Service{
 			mTrans.sendBundle(position, bundle);
 			
 		}
+
+		@Override
+		public void setSocket(String ip, int port) throws RemoteException {
+			mTrans.setIp(ip);
+			mTrans.setPort(port);
+		}
+
+		@Override
+		public String getSocketIp() throws RemoteException {
+			return mTrans.getIp();
+		}
+
+		@Override
+		public int getSocketPort() throws RemoteException {
+			return mTrans.getPort();
+		}
+
+		@Override
+		public String networkSpeed() throws RemoteException {
+			mTrans.sendBundle(Environment.getExternalStorageDirectory().getPath() 
+					+ "/AFelixData/", "Speed.test"); 
+			float networkTxSpeed = mTrans.getNetworkTxSpeed();
+			float networkRxSpeed = mTrans.getNetworkRxSpeed();
+			String SpeedText = "Upload: ";
+			
+			if(networkTxSpeed < 1) SpeedText += (networkTxSpeed * 1024) + "B/s";
+			else if(networkTxSpeed >= 1 && networkTxSpeed < 1024)
+				SpeedText += networkTxSpeed + "KB/s";
+			else SpeedText += (networkTxSpeed / 1024)  + "MB/s";
+			SpeedText += "\nDownload: ";
+			if(networkRxSpeed < 1) SpeedText += (networkRxSpeed * 1024) + "B/s";
+			else if(networkRxSpeed >= 1 && networkRxSpeed < 1024)
+				SpeedText += networkRxSpeed + "KB/s";
+			else SpeedText += (networkRxSpeed / 1024)  + "MB/s";
+			return SpeedText;
+		}
+
+		@Override
+		public float networkUploadSpeed() throws RemoteException {
+			return mTrans.getNetworkTxSpeed();
+		}
+
+		@Override
+		public float networkDownloadSpeed() throws RemoteException {
+			return mTrans.getNetworkRxSpeed();
+		}
 	};
-	
+			
 	private Class<?>[] classListToArray(List<String> classList){
 		Class<?>[] classArray = new Class<?>[classList.size()];
 		int i = 0;

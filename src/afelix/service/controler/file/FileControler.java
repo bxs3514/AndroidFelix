@@ -1,6 +1,8 @@
 package afelix.service.controler.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -61,6 +63,8 @@ public class FileControler implements IFileControler{
 			if(!tempFile.exists()){
 				tempFile.mkdir();
 			}
+			writeFileSdcardFile(location + File.separator + AFelixDir + File.separator,
+					"Speed.test", new byte[1024*1024]);
 		}else{
 			Log.e(TAG, "Can't find the external storate.");
 		}
@@ -108,9 +112,22 @@ public class FileControler implements IFileControler{
 
 
 	@Override
-	public void writeFileSdcardFile(String fileName, String write_str) {
-		// TODO Auto-generated method stub
-		
+	public void writeFileSdcardFile(String location, String fileName, byte[] write_str) {
+		File file = new File(location, fileName);
+		System.out.println(location + fileName);
+		FileOutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			try {
+				  outputStream.write(write_str);
+				  outputStream.close();
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+
 	}
 	
 

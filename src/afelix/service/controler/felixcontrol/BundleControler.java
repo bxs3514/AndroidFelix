@@ -24,6 +24,7 @@ public interface BundleControler {
 	public String restart(String bundle);
 	public String update(String bundle);
 	public String find(String bundle);
+	public String dependency(String bundle);
 	public ArrayList<String> BundleInfo(int command);
 	public BundlePresent execute(Context context, BundlePresent mBundle, 
 			String path, String bundlePack, String className, String methodName, 

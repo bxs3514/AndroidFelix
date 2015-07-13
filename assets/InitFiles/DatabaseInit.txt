@@ -13,15 +13,14 @@ CREATE TABLE `Bundle` (
 
 CREATE TABLE `Dependency` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`AppId`	INTEGER,
-	`BundleId`	INTEGER,
-	FOREIGN KEY('AppId') REFERENCES App('id')
-	FOREIGN KEY('BundleId') REFERENCES Bundle('id')
+	`Bundle` TEXT UNIQUE,
+	'Dependency' TEXT,
+	FOREIGN KEY('Bundle') REFERENCES Bundle('Name')
 );
 
 CREATE TABLE `File` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`Bundle`  TEXT,
+	`Bundle`  TEXT UNIQUE,
 	`FileName`  TEXT,
 	FOREIGN KEY('Bundle') REFERENCES Bundle('Name')
 );

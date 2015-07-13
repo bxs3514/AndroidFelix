@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import afelix.afelixservice.androidfelix.R;
 import afelix.service.controler.database.BundleDataCenter;
@@ -60,6 +62,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	private DatabaseControler afDbCtrl;
 	
 	private ListView BundleList;
+	private TextView speedText;
 	private EditText Command;
 	private Button ConfirmBtn;
 	private Button ResetBtn;
@@ -81,6 +84,31 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private Thread refreshThread;
 	private RefreshList refresh;
+	public TimerTask refreshNetworkSpeed = new TimerTask(){
+		
+		public void run(){
+			try{
+				synchronized(this){
+					//this.wait();
+					
+					runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							try {
+								speedText.setText(mAFelixService.networkSpeed());
+							} catch (RemoteException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+					});
+				}
+			}catch(IllegalThreadStateException te){
+				Log.e(TAG, te.toString());
+			}
+		}
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -219,6 +247,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		as you specify a parent activity in AndroidManifest.xml.*/
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -234,6 +263,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				try{
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
+						new Timer().schedule(refreshNetworkSpeed, 0, 1000);
 						refreshThread.start();
 					}
 				}catch (RemoteException re){
@@ -281,7 +311,9 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private void initViews(){
 		//Init views
-		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall", "Send"};
+
+		speedText = (TextView)findViewById(R.id.networkSpeed);
+		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall", "Send", "Dependency"};
 		bundleInstallList = new ArrayList<String>();
 		bundleIdMap = new HashMap<String, Integer>();
 		afDbCtrl = new DatabaseControler(getApplicationContext());
@@ -368,6 +400,13 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 								e.printStackTrace();
 							}
 							break;
+						case 6:
+							try {
+								mAFelixService.dependency((bundle.split("\\s+"))[0]);
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+							break;
 						}
 					}
 				}).show();
@@ -418,7 +457,7 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		ShowAllBundleBtn.setOnClickListener(this);
 	}
 	
-	
+			
 	private class RefreshList implements Runnable{
 		
 		private void Refresh(){

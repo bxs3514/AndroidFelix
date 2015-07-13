@@ -33,4 +33,11 @@ interface IAFelixService{
 	BundlePresent getBundlesContainer(String bundle);
 	String dependency(String bundle);
 	boolean interpret(String command);
+	void setSocket(String ip, int port);
+	
+	String getSocketIp();
+	int getSocketPort();
+	String networkSpeed();
+	float networkUploadSpeed();
+	float networkDownloadSpeed();
 }

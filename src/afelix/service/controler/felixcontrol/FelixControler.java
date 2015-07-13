@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -30,7 +28,6 @@ import afelix.service.controler.database.DatabaseControler;
 import afelix.service.interfaces.BundlePresent;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 public class FelixControler implements BundleControler{
@@ -38,7 +35,7 @@ public class FelixControler implements BundleControler{
 	
 	private Felix felixFramework;
 	private Bundle resBundle;
-	private BundlePresent resBundlePresent;
+	//private BundlePresent resBundlePresent;
 	private ConsoleInterpreter mInterpreter;
 	private Class<?> loadedClass;
 	private ServiceReference<?> ref;
@@ -115,7 +112,13 @@ public class FelixControler implements BundleControler{
 		res = this.MainControler(bundle, "", 0);
 		return res;
 	}
-	
+
+	@Override
+	public String dependency(String bundle) {
+		res = this.MainControler(bundle, "", 128);
+		System.out.println(res);
+		return res;
+	}
 	
 	public String interpret(Context context, String command){
 		return mInterpreter.interpret(context, command);
@@ -161,7 +164,9 @@ public class FelixControler implements BundleControler{
 				ArrayList<String> as = new ArrayList<String>();
 				as.add(mBundle.getSymbolicName());
 				as.add(bundle);
-				this.mDbCtrl.Insert("File", as);
+				//if(mDbCtrl.Query(as.toArray(new String[as.size()]), "File", "Bundle = '" + mBundle.getSymbolicName() + "'").size() == 0)
+					this.mDbCtrl.Insert("File", as);
+				//else this.mDbCtrl.Update("File", as);
 				//new Thread(){
 					//public void run(){
 						//this.mDbCtrl.Insert("File", new ArrayList<String>(Arrays.asList(mBundle, bundle)));
@@ -186,6 +191,7 @@ public class FelixControler implements BundleControler{
 		case 32://start a bundle
 		case 48://restart a bundle
 		case 64://update a bundle
+		case 128://bundle dependency
 			long bid = -1;
 			boolean isLong = false;
 			
@@ -278,6 +284,37 @@ public class FelixControler implements BundleControler{
 		        	System.out.println(be.toString());
 		        	return "Unable to restart Bundle: " + bundle + " for\n" + be.toString();
 		        }
+	        case 128:
+	        	/*URL manifestUrl = b.getEntry("META-INF/MANIFEST.MF");
+	        	try {
+					BufferedReader manifestReader = new BufferedReader(
+							new InputStreamReader(manifestUrl.openConnection().getInputStream()));
+					String manifestText = "";
+					String temp = "";
+					boolean ifDependency = false;
+					while(manifestReader.ready()){
+						temp = manifestReader.readLine();
+						if(temp != null){
+							if(temp.indexOf("Import-Package") == 0){
+								manifestText += temp.split(": ")[1];
+								ifDependency = true; 
+							}else if(temp.contains(":") && ifDependency){
+								break;
+							}else if(ifDependency){
+								manifestText += temp;
+							}
+						}
+					}
+					
+					System.out.println(manifestText + manifestText.length());
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return "Unable to get the Bundle:" + bundle + "'s dependency for\n" + e.toString();
+				}*/
+		        return b.getHeaders().get("Import-Package");
+	    
 	        }
 		default:
 			return "Invalid command.";   
@@ -422,13 +459,12 @@ public class FelixControler implements BundleControler{
 					mBundle.setBundleResult(resKey, m.invoke(serviceInstance, parameters));
 				}
 				else{
-					Log.e(TAG, "Null serveice!!!");
+					Log.e(TAG, "Null serveice!");
 				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -446,4 +482,5 @@ public class FelixControler implements BundleControler{
 		}
 		return mBundle;
 	}
+
 }

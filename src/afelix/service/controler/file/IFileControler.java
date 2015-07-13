@@ -9,7 +9,7 @@ public interface IFileControler {
 	
 	public void initAFelixFile();
 	public void readFileAssetsFile(Context context, String fileName);
-	public void writeFileSdcardFile(String fileName, String write_str);
+	public void writeFileSdcardFile(String location, String fileName, byte[] write_str);
 	public void mkDictionary(String location);
 	public File[] getFileList(String location, String filter);
 }
