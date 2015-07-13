@@ -100,7 +100,9 @@ public class SocketTransfer {
                  d.writeUTF(myFile.getName());
                  d.flush();
                  //d.writeLong(myFile.length());
-                 //d.flush();
+                 d.writeLong(System.currentTimeMillis());
+                 d.flush();
+                 //long lastTime = System.currentTimeMillis();
                  d.write(mybytearray,0,mybytearray.length);
                  d.flush();
 				 d.close();
