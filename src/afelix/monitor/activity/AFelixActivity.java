@@ -5,7 +5,7 @@
  *
  * This is a monitor to show the bundle states to users.
  *
- * @lastEdit 12/6/2014
+ * @lastEdit 07/16/2015
  * 
  */
 
@@ -38,6 +38,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,32 +85,14 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private Thread refreshThread;
 	private RefreshList refresh;
-	public TimerTask refreshNetworkSpeed = new TimerTask(){
-		
-		public void run(){
-			try{
-				synchronized(this){
-					//this.wait();
-					
-					runOnUiThread(new Runnable(){
-						@Override
-						public void run() {
-							try {
-								speedText.setText(mAFelixService.networkSpeed());
-							} catch (RemoteException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						
-					});
-				}
-			}catch(IllegalThreadStateException te){
-				Log.e(TAG, te.toString());
-			}
-		}
-	};
-	
+	private TimerTask refreshNetworkSpeed;
+	private Timer timer;
+	private float[] uploadSpeed;
+	private float[] downloadSpeed;
+	private float avgUploadSpeed;
+	private float avgDownloadSpeed;
+    private int counter = 0;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -125,21 +108,18 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				getApplicationContext(), bindServiceIntent);
 
 		bindService(bindServiceIntent, mConnection, Context.BIND_AUTO_CREATE);
-		//Toast.makeText(this, "OnCreate", Toast.LENGTH_SHORT).show();
 	}
 	
 	
 	@Override
 	protected void onStart(){
 		super.onStart();
-		//Toast.makeText(this, "OnStart", Toast.LENGTH_SHORT).show();
 	}
 	
 	
 	@Override
 	protected void onResume(){
 		super.onResume();
-		//Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
 	}
 	
 	
@@ -158,14 +138,12 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	@Override
 	protected void onStop(){
 		super.onStop();
-		//Toast.makeText(this, "OnStop", Toast.LENGTH_SHORT).show();
 	}
 	
 	
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
-		//Toast.makeText(this, "OnDestroy", Toast.LENGTH_SHORT).show();
 		if(mConnection != null)
 			unbindService(mConnection);
 	}
@@ -246,9 +224,45 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		automatically handle clicks on the Home/Up button, so long
 		as you specify a parent activity in AndroidManifest.xml.*/
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.Socket) {
+			LayoutInflater layoutInflater = LayoutInflater.from(this);
+			View socketView = layoutInflater.inflate(R.layout.socket_setting, null);
+			final EditText[] ipEdit = new EditText[]{(EditText)socketView.findViewById(R.id.ipEdit1),
+					(EditText)socketView.findViewById(R.id.ipEdit2),
+					(EditText)socketView.findViewById(R.id.ipEdit3),
+					(EditText)socketView.findViewById(R.id.ipEdit4)};
+			final EditText portEdit = (EditText)socketView.findViewById(R.id.portEdit);
+			
+			new AlertDialog.Builder(this).setTitle("Socket Setting").setView(socketView).
+			setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					try {
+						mAFelixService.setSocket(ipEdit[0].getText().toString() + "." + 
+								ipEdit[1].getText().toString() + "." + 
+								ipEdit[2].getText().toString() + "." + 
+								ipEdit[3].getText().toString(),
+								Integer.parseInt(portEdit.getText().toString()));
+					} catch (NumberFormatException e) {
+						e.printStackTrace();
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			}).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+				}
+			}).show();
 			
 			return true;
+		}
+		else if(id == R.id.NetSpeedOpinion){
+			measureUploadSpeed();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -263,7 +277,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 				try{
 					if(service.getInterfaceDescriptor().equals(IAFelixService.class.getName())){
 						mAFelixService = IAFelixService.Stub.asInterface(service);
-						new Timer().schedule(refreshNetworkSpeed, 0, 1000);
 						refreshThread.start();
 					}
 				}catch (RemoteException re){
@@ -311,9 +324,6 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 	
 	private void initViews(){
 		//Init views
-
-		speedText = (TextView)findViewById(R.id.networkSpeed);
-		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall", "Send", "Dependency"};
 		bundleInstallList = new ArrayList<String>();
 		bundleIdMap = new HashMap<String, Integer>();
 		afDbCtrl = new DatabaseControler(getApplicationContext());
@@ -323,6 +333,14 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		afDbCtrl.Insert("App", as);
 		as.clear();
 		
+		//
+		speedText = (TextView)findViewById(R.id.networkSpeed);
+		uploadSpeed = new float[10];
+		downloadSpeed = new float[10];
+		timer = new Timer();
+
+		//
+		operations = new String[]{"Start", "Stop", "Update", "Restart", "Uninstall", "Send", "Dependency"};
 		BundleList = (ListView)findViewById(R.id.bundleList);
 		BundleList.setOnItemClickListener(new OnItemClickListener(){
 
@@ -330,13 +348,8 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 			public void onItemClick(AdapterView<?> parent,
 					View view, int position, long id) { 
 				
-				//final int finalPositon = position;
 				final String bundle = (String)parent.getItemAtPosition(position);
 				final String bundleId = (bundle.split("\\s+"))[0];
-				//final String bundleName = (bundle.split("\\s+"))[1];
-				
-				//Toast.makeText(AFelixActivity.this, 
-						//"The bundle is: " + bundleName, Toast.LENGTH_SHORT).show();
 				
 				new AlertDialog.Builder(AFelixActivity.this)
 				.setTitle("Choose your operation to the bundle")
@@ -457,7 +470,60 @@ public class AFelixActivity extends ActionBarActivity implements OnClickListener
 		ShowAllBundleBtn.setOnClickListener(this);
 	}
 	
-			
+	private void measureUploadSpeed(){
+		counter = 0;
+		avgUploadSpeed = avgDownloadSpeed = 0;
+		
+		//if(refreshNetworkSpeed != null){
+			//refreshNetworkSpeed.cancel();
+			//refreshNetworkSpeed = new mNetworkSpeed();
+		//}
+		refreshNetworkSpeed = new mNetworkSpeed();
+		timer.schedule(refreshNetworkSpeed, 0, 1000);
+	}
+	
+	private class mNetworkSpeed extends TimerTask{
+
+		@Override
+		public void run(){
+			try{
+				synchronized(this){
+					runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							try {
+								speedText.setText(mAFelixService.networkSpeed());
+								uploadSpeed[counter] = mAFelixService.networkUploadSpeed();
+								downloadSpeed[counter] = mAFelixService.networkDownloadSpeed();
+								avgUploadSpeed += uploadSpeed[counter];
+								avgDownloadSpeed += downloadSpeed[counter];
+								counter++;
+								System.out.println(counter);
+								if(counter == 10) {
+									avgUploadSpeed /= 10;
+									avgDownloadSpeed /= 10;
+									
+									speedText.setText("Upload Speed: " + avgUploadSpeed + "KB/s\n" 
+									+ "Download Speed: " + avgDownloadSpeed + "KB/s");
+									refreshNetworkSpeed.cancel();
+									//timer.cancel();
+								}
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						}
+						
+					});
+				}
+			}catch(IllegalThreadStateException te){
+				Log.e(TAG, te.toString());
+			}
+		}
+		
+		
+	}
+	
+	
 	private class RefreshList implements Runnable{
 		
 		private void Refresh(){

@@ -44,6 +44,7 @@ public class SocketTransfer {
 		lastTxByte = TrafficStats.getTotalTxBytes();
 		lastRxByte = TrafficStats.getTotalRxBytes();
 		lastTimeStamp = System.currentTimeMillis();
+		networkTxSpeed = networkRxSpeed = 0;
 		new Timer().schedule(mTimerTask, 1000, 1000);
 	}
 	
@@ -86,6 +87,7 @@ public class SocketTransfer {
 		new Thread(){
 			public void run(){
 				 try{
+				 System.out.println(ip + ":" + port);
 				 mSocket = new Socket(ip, port);  //connect to server
 				 
                  FileInputStream fis = new FileInputStream(myFile);
@@ -97,23 +99,26 @@ public class SocketTransfer {
                  
                  if(!bundleName.equals("Speed.test"))
                  	System.out.println("Sending...");
+                 
                  d.writeUTF(myFile.getName());
                  d.flush();
                  //d.writeLong(myFile.length());
                  d.writeLong(System.currentTimeMillis());
                  d.flush();
-                 //long lastTime = System.currentTimeMillis();
+                 //long startTime = System.currentTimeMillis();
+                 //while((bufByte = bis.read(mybytearray)) != -1)
                  d.write(mybytearray,0,mybytearray.length);
                  d.flush();
 				 d.close();
                  
+				 //System.out.println(System.currentTimeMillis() - startTime);
 				 mSocket.close();   //closing the connection
 				 }catch (UnknownHostException e) {
 					 e.printStackTrace();
 					} catch (IOException e) {
 					 e.printStackTrace();
 					}
-			 }
+			 } 
 		}.start();
 	}
 	
@@ -130,8 +135,15 @@ public class SocketTransfer {
 		
 		networkTxByte = (float)(nowTxByte - lastTxByte);
 		networkRxByte = (float)(nowRxByte - lastRxByte);
-		networkTxSpeed = networkTxByte / (nowTimeStamp - lastTimeStamp);
-		networkRxSpeed = networkRxByte / (nowTimeStamp - lastTimeStamp);
+		if(networkTxSpeed == 0)
+			networkTxSpeed = networkTxByte / (nowTimeStamp - lastTimeStamp);
+		else 
+			networkTxSpeed = networkTxSpeed * 0.3f + networkTxByte / (nowTimeStamp - lastTimeStamp);
+		
+		if(networkRxSpeed == 0)
+			networkRxSpeed = networkRxByte / (nowTimeStamp - lastTimeStamp);
+		else 
+			networkRxSpeed = networkRxSpeed * 0.3f + networkRxByte / (nowTimeStamp - lastTimeStamp) * 0.7f;
 		
 		lastTxByte = nowTxByte;
 		lastRxByte = nowRxByte;

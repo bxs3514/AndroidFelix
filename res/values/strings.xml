@@ -8,5 +8,7 @@
     <string name="title_activity_file_system">FileSystemActivity</string>
     <string name="bundle_list_bundle_title">Bundle</string>
     <string name="bundle_list_location_title">Location</string>
+    <string name="socket_setting">Socket</string>
+    <string name="NetworkSpeedMenu">Measure Speed</string>
 
 </resources>
